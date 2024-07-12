@@ -6,6 +6,7 @@ website:
   title: "azumaya"
   navbar:
     left:
+      - about.qmd
       - post.qmd
 
 format:

@@ -1,0 +1,86 @@
+---
+title: "About"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+page-layout: full
+title-block-banner: true
+---
+
+## About Me
+
+- 学士（経営学）
+- 経営学研究科所属M2
+- 専門：管理会計
+
+### スキル
+
+- R：3年目、日々精進
+- Quarto：趣味
+- Python：基礎のみ
+- GitHub：まだまだこれから
+
+- Adobe Illustrator：6年目、まぁまぁ使える
+- Adobe After Effects：使える
+
+いつかKaggleに参加したいです。
+
+## Favorite
+
+### 音楽
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3PeN36P94esALkSaadtn2H?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+
+### 本
+
+[これまでに読んだ本](https://bookmeter.com/users/466784)
+
+特にお気に入り
+
+- 橋爪大三郎 (1988)[『はじめての構造主義』](https://bookclub.kodansha.co.jp/product?item=0000146360)講談社現代新書
+- マックス・ウェーバー著, 中山元訳 (2010)[『プロテスタンティズムの倫理と資本主義の精神』](https://bookplus.nikkei.com/atcl/catalog/10/P47910/)日経BP.
+- カルロ・マリア・チッポラ著, 徳橋曜訳[『経済史への招待: 歴史学と経済学のはざまへ』](https://www.kinokuniya.co.jp/f/dsg-01-9784772004848)国文社.
+
+
+
+### 作品
+
+- 森見登美彦
+- 「少女☆歌劇レヴュースタァライト」シリーズ
+- [濱祐斗デザイン事務所](http://www.hama-design.com/)
+
+
+## 今後まとめたいあれこれ
+
+### Spotify分析
+
+- 星野源POP VIRUS以降
+- 星野源とSAKEROCK
+- キリンジ時代の泰之曲と高樹曲
+- 荒井時代のユーミン
+- キリンジとオフコースって似た成分ある気がする
+- sumikaと緑黄色社会って好きな成分近いと思う
+- 大貫妙子「色彩都市」カバー、薬師丸ひろ子・原田知世・ユーミンキャラメルママの違い
+- 似た系統の海外アーティストの曲は何か違うところあるのか
+- クラシックはどんな数値？ラヴェルとドビュッシー
+
+### その他分析
+
+- 歌詞のテキスト分析
+
+### R / Quarto Tips
+
+- 結局どの相関行列が見やすいのか
+- チャンクオプションまとめ
+- 効率的に表記ゆれを直したい
+- 論文に載せるための図表
+
+### 勉強
+- ポートフォリオ・ソートを実データで試してみる（[笠原晃恭・村宮克彦 (2022)『実証会計・ファイナンス - Rによる財務・株式データの分析』新世社.](https://www.saiensu.co.jp/search/?isbn=978-4-88384-349-7&y=2022)）
+
+- ベイズ統計復習
+- さすがにPythonも読み書きできるようになりたい
+- 論文レプリケーション
+
