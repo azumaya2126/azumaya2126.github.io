@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="興味、関心など">
 
 <title>About – azumaya</title>
 <style>
@@ -30,8 +31,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -68,65 +67,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "サーチ"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -168,7 +109,12 @@ window.Quarto = {
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-page-left">
       <h1 class="title">About</h1>
-                      </div>
+                  <div>
+        <div class="description">
+          興味、関心など
+        </div>
+      </div>
+                </div>
   </div>
     
   
@@ -222,15 +168,25 @@ window.Quarto = {
 <li>経営学研究科所属M2</li>
 <li>専門：管理会計</li>
 </ul>
+<p>関心のある・もっと知りたいキーワード</p>
+<ul>
+<li>SCM（サプライチェーン・マネジメント）</li>
+<li>操作化</li>
+<li>構成概念妥当性</li>
+<li>異常検知</li>
+<li>品質管理</li>
+<li>原価計算</li>
+<li>構造主義</li>
+</ul>
 <section id="スキル" class="level3">
 <h3 class="anchored" data-anchor-id="スキル">スキル</h3>
 <ul>
-<li><p>R：3年目、日々精進</p></li>
-<li><p>Quarto：趣味</p></li>
-<li><p>Python：基礎のみ</p></li>
-<li><p>GitHub：まだまだこれから</p></li>
-<li><p>Adobe Illustrator：6年目、まぁまぁ使える</p></li>
-<li><p>Adobe After Effects：使える</p></li>
+<li>R：3年目、日々精進</li>
+<li>Quarto：趣味</li>
+<li>Python：基礎のみ</li>
+<li>GitHub：まだまだこれから</li>
+<li>Adobe Illustrator：6年目、まぁまぁ使える</li>
+<li>Adobe After Effects：使える</li>
 </ul>
 <p>いつかKaggleに参加したいです。</p>
 </section>
@@ -249,7 +205,7 @@ window.Quarto = {
 <ul>
 <li>橋爪大三郎 (1988)<a href="https://bookclub.kodansha.co.jp/product?item=0000146360">『はじめての構造主義』</a>講談社現代新書</li>
 <li>マックス・ウェーバー著, 中山元訳 (2010)<a href="https://bookplus.nikkei.com/atcl/catalog/10/P47910/">『プロテスタンティズムの倫理と資本主義の精神』</a>日経BP.</li>
-<li>カルロ・マリア・チッポラ著, 徳橋曜訳<a href="https://www.kinokuniya.co.jp/f/dsg-01-9784772004848">『経済史への招待: 歴史学と経済学のはざまへ』</a>国文社.</li>
+<li>カルロ・マリア・チッポラ著, 徳橋曜訳 (2001)<a href="https://www.kinokuniya.co.jp/f/dsg-01-9784772004848">『経済史への招待: 歴史学と経済学のはざまへ』</a>国文社.</li>
 </ul>
 </section>
 <section id="作品" class="level3">
@@ -295,80 +251,17 @@ window.Quarto = {
 <section id="勉強" class="level3">
 <h3 class="anchored" data-anchor-id="勉強">勉強</h3>
 <ul>
-<li><p>ポートフォリオ・ソートを実データで試してみる（<a href="https://www.saiensu.co.jp/search/?isbn=978-4-88384-349-7&amp;y=2022">笠原晃恭・村宮克彦 (2022)『実証会計・ファイナンス - Rによる財務・株式データの分析』新世社.</a>）</p></li>
-<li><p>ベイズ統計復習</p></li>
-<li><p>さすがにPythonも読み書きできるようになりたい</p></li>
-<li><p>論文レプリケーション</p></li>
+<li>ポートフォリオ・ソートを実データで試してみる（<a href="https://www.saiensu.co.jp/search/?isbn=978-4-88384-349-7&amp;y=2022">笠原晃恭・村宮克彦 (2022)『実証会計・ファイナンス - Rによる財務・株式データの分析』新世社.</a>）</li>
+<li>ベイズ統計復習</li>
+<li>さすがにPythonの読み書きスキルをあげよう</li>
+<li>論文レプリケーション</li>
 </ul>
 
 
-
 </section>
 </section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Spotify,Analysis,Music,R" data-listing-date-sort="1717340400000" data-listing-file-modified-sort="1720783597006" data-listing-date-modified-sort="1717426800000" data-listing-reading-time-sort="5" data-listing-word-count-sort="879">
-<div class="thumbnail">
-<p><a href="./posts/spotify02_gen_hoshino/index.html" class="no-external"></a></p><a href="./posts/spotify02_gen_hoshino/index.html" class="no-external">
-<p class="card-img-top"><img src="posts\spotify02_gen_hoshino\index_files\figure-html\unnamed-chunk-8-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/spotify02_gen_hoshino/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/spotify02_gen_hoshino/index.html" class="no-external">星野源のアルバム楽曲をRで分析してみる</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/spotify02_gen_hoshino/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./posts/spotify02_gen_hoshino/index.html" class="no-external">RでSpotify分析やってみる初回。</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/spotify02_gen_hoshino/index.html" class="no-external">
-<div class="listing-date">
-2024/06/03
-</div>
-<div class="listing-author">
-azumaya
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Spotify,Analysis,Music,R" data-listing-date-sort="1716649200000" data-listing-file-modified-sort="1720783615843" data-listing-date-modified-sort="1720710000000" data-listing-reading-time-sort="1" data-listing-word-count-sort="52">
-<div class="thumbnail">
-<p><a href="./posts/spotify01/index.html" class="no-external"></a></p><a href="./posts/spotify01/index.html" class="no-external">
-<p class="card-img-top"><img src="posts\spotify01\images\cliant.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/spotify01/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/spotify01/index.html" class="no-external">RでSpotifyの分析</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/spotify01/index.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./posts/spotify01/index.html" class="no-external">世の中にPythonを使ったSpotify分析はたくさんあるけど、Rでもやってみたい。</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/spotify01/index.html" class="no-external">
-<div class="listing-date">
-2024/05/26
-</div>
-<div class="listing-author">
-azumaya
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-一致なし
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -475,6 +368,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {

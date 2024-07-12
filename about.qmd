@@ -1,9 +1,6 @@
 ---
 title: "About"
-listing:
-  contents: posts
-  sort: "date desc"
-  type: default
+description: "興味、関心など"
 page-layout: full
 title-block-banner: true
 ---
@@ -14,17 +11,30 @@ title-block-banner: true
 - 経営学研究科所属M2
 - 専門：管理会計
 
+
 ### スキル
 
 - R：3年目、日々精進
 - Quarto：趣味
 - Python：基礎のみ
 - GitHub：まだまだこれから
-
 - Adobe Illustrator：6年目、まぁまぁ使える
 - Adobe After Effects：使える
 
 いつかKaggleに参加したいです。
+
+### キーワード
+
+関心のある・もっと知りたいあれこれ
+
+- 組織間管理会計
+- SCM（サプライチェーン・マネジメント）
+- 操作化
+- 構成概念妥当性
+- 異常検知
+- 品質管理
+- 原価計算
+- 構造主義
 
 ## Favorite
 
@@ -41,7 +51,7 @@ title-block-banner: true
 
 - 橋爪大三郎 (1988)[『はじめての構造主義』](https://bookclub.kodansha.co.jp/product?item=0000146360)講談社現代新書
 - マックス・ウェーバー著, 中山元訳 (2010)[『プロテスタンティズムの倫理と資本主義の精神』](https://bookplus.nikkei.com/atcl/catalog/10/P47910/)日経BP.
-- カルロ・マリア・チッポラ著, 徳橋曜訳[『経済史への招待: 歴史学と経済学のはざまへ』](https://www.kinokuniya.co.jp/f/dsg-01-9784772004848)国文社.
+- カルロ・マリア・チッポラ著, 徳橋曜訳 (2001)[『経済史への招待: 歴史学と経済学のはざまへ』](https://www.kinokuniya.co.jp/f/dsg-01-9784772004848)国文社.
 
 
 
@@ -79,8 +89,7 @@ title-block-banner: true
 
 ### 勉強
 - ポートフォリオ・ソートを実データで試してみる（[笠原晃恭・村宮克彦 (2022)『実証会計・ファイナンス - Rによる財務・株式データの分析』新世社.](https://www.saiensu.co.jp/search/?isbn=978-4-88384-349-7&y=2022)）
-
 - ベイズ統計復習
-- さすがにPythonも読み書きできるようになりたい
+- さすがにPythonの読み書きスキルをあげよう
 - 論文レプリケーション
 
