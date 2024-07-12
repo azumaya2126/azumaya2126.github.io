@@ -5,11 +5,6 @@ date-modified: today
 toc: true
 ---
 
-### Spotify Analysis
+### [Post](/post.html)
 
-RでSpotifyの分析をやってみます。
-[星野源](https://azumaya2126.github.io/spotify_analysis/gen_hoshino.html)
-
-### Tips
-
-RまたはQuartoのtipsを記録します。
+分析、勉強、練習など。主にRです。

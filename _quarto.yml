@@ -6,12 +6,10 @@ website:
   title: "azumaya"
   navbar:
     left:
-      - href: index.qmd
-        text: Home
+      - post.qmd
 
 format:
   html:
-    code-tools: true
     theme: zephyr
     css: styles.css
     toc: true

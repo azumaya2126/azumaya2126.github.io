@@ -1,0 +1,13 @@
+---
+title: "Posts"
+description: "分析、勉強、練習など"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+---

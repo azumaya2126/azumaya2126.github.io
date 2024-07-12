@@ -1,0 +1,92 @@
+---
+title: "RでSpotifyの分析"
+author: "azumaya"
+date: "2024/05/26"
+date-modified: "today"
+format:
+  html:
+    toc: TRUE
+    toc_depth: 2
+    toc_float: TRUE
+    highlight: "tango"
+    link-external-newwindow: TRUE
+categories:
+  - Spotify
+  - Analysis
+  - Music
+  - R
+---
+
+# やりたいこと
+
+世の中にPythonを使ったSpotify分析はたくさんあるけど、Rでもやってみたい。
+
+まずは、RでSpotifyの情報にアクセスできるようになり、これまでなんとなく感じていた音楽を数値的に見てみる準備をする。
+
+# 準備
+##  Spotifyの情報を使えるようにする
+
+### パッケージのインストール
+
+RでSpotifyの情報を取得するパッケージ[spotifyr](https://www.rcharlie.com/spotifyr/)がある。
+CRAN version 2.1.0であれば以下でインストールできるっぽい。
+
+```{r}
+# パッケージをインストールして読み込み
+pacman::p_load(spotifyr)
+```
+
+::: {.callout-tip appearance="simple"}
+最近は`pacman`パッケージの`p_load()`をよく使っています。`install.packages()`と`library()`の合わせ技で、パッケージがインストールされていなかったらインストールを含め、読み込みまでやってくれる。
+
+R人生で一度だけ`pacman`をインストールしておけば、「このパッケージってインストールしてたかな」から解放されるし、パッケージ読み込みが1行で済むのは案外便利。
+
+他にも続けてライブラリを読み込みたい時は、`pacman::p_load(spotifyr, tidyverse)`のようにカンマでつなげる。
+:::
+
+### API情報を取得
+
+1.  Spotifyのアカウントで[Spotify for Developers](https://developer.spotify.com/)にログインする
+
+2.  DashboardからCreate appでappを作る
+
+3.  必要事項に入力してSave（Redirect URLsは何を入れたら分からなかったけど例に書いてあるURL入れたらOKだった。いいの？）
+
+4.  Dashboardからappを選択して、Settings \> Basic InformationからCliant IDとClient secret（隠されている）をコピーして、以下の通り実行
+
+![](images/cliant.png){fig-align="center" width="674"}
+
+```{r eval = FALSE}
+Sys.setenv(SPOTIFY_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxx')
+Sys.setenv(SPOTIFY_CLIENT_SECRET = 'xxxxxxxxxxxxxxxxxxxxx')
+
+access_token <- get_spotify_access_token()
+```
+
+```{r include = FALSE}
+Sys.setenv(SPOTIFY_CLIENT_ID = "44af3e1025034575bf0766d197d738e6")
+Sys.setenv(SPOTIFY_CLIENT_SECRET = "d96455b022fe4e04876162dfab9c66b5")
+access_token <- get_spotify_access_token()
+```
+
+これでSpotifyの情報取り放題～
+
+
+::: {.callout-caution appearance="simple"}
+
+大量のデータを取得しようとしたり、短時間に何度も`get_spotify_access_token()`を行うとAPI取得制限に引っ掛かることがあります。
+具体的にどの程度の負荷をかけるとダメなのかは分かりませんが。時間を置いて再度試してみてください。
+
+:::
+
+# 分析
+
+[星野源のアルバム楽曲を分析してみる](https://azumaya2126.github.io/spotify_analysis/gen_hoshino.html)
+
+
+
+# 参考
+
+[spotifyr](https://www.rcharlie.com/spotifyr/)
+
+[【R】Spotify APIを利用して関連するアーティストをDigりまくる](https://sunaninattahito.hatenablog.com/entry/2021/06/01/202317)

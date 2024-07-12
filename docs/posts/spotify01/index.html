@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="azumaya">
 
-<title>azumaya web – azumaya</title>
+<title>RでSpotifyの分析 – azumaya</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,25 +21,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,7 +103,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -78,7 +113,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">azumaya</span>
     </a>
   </div>
@@ -89,7 +124,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./post.html"> 
+    <a class="nav-link" href="../../post.html"> 
 <span class="menu-text">Posts</span></a>
   </li>  
 </ul>
@@ -108,7 +143,17 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">目次</h2>
    
   <ul>
-  <li><a href="#post" id="toc-post" class="nav-link active" data-scroll-target="#post">Post</a></li>
+  <li><a href="#やりたいこと" id="toc-やりたいこと" class="nav-link active" data-scroll-target="#やりたいこと">やりたいこと</a></li>
+  <li><a href="#準備" id="toc-準備" class="nav-link" data-scroll-target="#準備">準備</a>
+  <ul class="collapse">
+  <li><a href="#spotifyの情報を使えるようにする" id="toc-spotifyの情報を使えるようにする" class="nav-link" data-scroll-target="#spotifyの情報を使えるようにする">Spotifyの情報を使えるようにする</a>
+  <ul class="collapse">
+  <li><a href="#パッケージのインストール" id="toc-パッケージのインストール" class="nav-link" data-scroll-target="#パッケージのインストール">パッケージのインストール</a></li>
+  <li><a href="#api情報を取得" id="toc-api情報を取得" class="nav-link" data-scroll-target="#api情報を取得">API情報を取得</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#分析" id="toc-分析" class="nav-link" data-scroll-target="#分析">分析</a></li>
+  <li><a href="#参考" id="toc-参考" class="nav-link" data-scroll-target="#参考">参考</a></li>
   </ul>
 </nav>
     </div>
@@ -117,18 +162,30 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">azumaya web</h1>
-</div>
+<h1 class="title">RでSpotifyの分析</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Spotify</div>
+    <div class="quarto-category">Analysis</div>
+    <div class="quarto-category">Music</div>
+    <div class="quarto-category">R</div>
+  </div>
+  </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">作者</div>
+    <div class="quarto-title-meta-contents">
+             <p>azumaya </p>
+          </div>
+  </div>
     
     <div>
     <div class="quarto-title-meta-heading">公開</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2024年7月12日</p>
+      <p class="date">2024年5月26日</p>
     </div>
   </div>
   
@@ -146,9 +203,76 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="post" class="level3">
-<h3 class="anchored" data-anchor-id="post"><a href=".\post.html">Post</a></h3>
-<p>分析、勉強、練習など。主にRです。</p>
+<section id="やりたいこと" class="level1">
+<h1>やりたいこと</h1>
+<p>世の中にPythonを使ったSpotify分析はたくさんあるけど、Rでもやってみたい。</p>
+<p>まずは、RでSpotifyの情報にアクセスできるようになり、これまでなんとなく感じていた音楽を数値的に見てみる準備をする。</p>
+</section>
+<section id="準備" class="level1">
+<h1>準備</h1>
+<section id="spotifyの情報を使えるようにする" class="level2">
+<h2 class="anchored" data-anchor-id="spotifyの情報を使えるようにする">Spotifyの情報を使えるようにする</h2>
+<section id="パッケージのインストール" class="level3">
+<h3 class="anchored" data-anchor-id="パッケージのインストール">パッケージのインストール</h3>
+<p>RでSpotifyの情報を取得するパッケージ<a href="https://www.rcharlie.com/spotifyr/">spotifyr</a>がある。 CRAN version 2.1.0であれば以下でインストールできるっぽい。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># パッケージをインストールして読み込み</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(spotifyr)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-simple callout-tip">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>最近は<code>pacman</code>パッケージの<code>p_load()</code>をよく使っています。<code>install.packages()</code>と<code>library()</code>の合わせ技で、パッケージがインストールされていなかったらインストールを含め、読み込みまでやってくれる。</p>
+<p>R人生で一度だけ<code>pacman</code>をインストールしておけば、「このパッケージってインストールしてたかな」から解放されるし、パッケージ読み込みが1行で済むのは案外便利。</p>
+<p>他にも続けてライブラリを読み込みたい時は、<code>pacman::p_load(spotifyr, tidyverse)</code>のようにカンマでつなげる。</p>
+</div>
+</div>
+</div>
+</section>
+<section id="api情報を取得" class="level3">
+<h3 class="anchored" data-anchor-id="api情報を取得">API情報を取得</h3>
+<ol type="1">
+<li><p>Spotifyのアカウントで<a href="https://developer.spotify.com/">Spotify for Developers</a>にログインする</p></li>
+<li><p>DashboardからCreate appでappを作る</p></li>
+<li><p>必要事項に入力してSave（Redirect URLsは何を入れたら分からなかったけど例に書いてあるURL入れたらOKだった。いいの？）</p></li>
+<li><p>Dashboardからappを選択して、Settings &gt; Basic InformationからCliant IDとClient secret（隠されている）をコピーして、以下の通り実行</p></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/cliant.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="674"></p>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">SPOTIFY_CLIENT_ID =</span> <span class="st">'xxxxxxxxxxxxxxxxxxxxx'</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">SPOTIFY_CLIENT_SECRET =</span> <span class="st">'xxxxxxxxxxxxxxxxxxxxx'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>access_token <span class="ot">&lt;-</span> <span class="fu">get_spotify_access_token</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>これでSpotifyの情報取り放題～</p>
+<div class="callout callout-style-simple callout-caution">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>大量のデータを取得しようとしたり、短時間に何度も<code>get_spotify_access_token()</code>を行うとAPI取得制限に引っ掛かることがあります。 具体的にどの程度の負荷をかけるとダメなのかは分かりませんが。時間を置いて再度試してみてください。</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="分析" class="level1">
+<h1>分析</h1>
+<p><a href="https://azumaya2126.github.io/spotify_analysis/gen_hoshino.html">星野源のアルバム楽曲を分析してみる</a></p>
+</section>
+<section id="参考" class="level1">
+<h1>参考</h1>
+<p><a href="https://www.rcharlie.com/spotifyr/">spotifyr</a></p>
+<p><a href="https://sunaninattahito.hatenablog.com/entry/2021/06/01/202317">【R】Spotify APIを利用して関連するアーティストをDigりまくる</a></p>
 
 
 </section>
@@ -260,6 +384,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
