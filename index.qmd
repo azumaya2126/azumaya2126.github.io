@@ -1,0 +1,15 @@
+---
+title: "azumaya web"
+date: 2024/07/12
+date-modified: today
+toc: true
+---
+
+### Spotify Analysis
+
+RでSpotifyの分析をやってみます。
+[星野源](https://azumaya2126.github.io/spotify_analysis/gen_hoshino.html)
+
+### Tips
+
+RまたはQuartoのtipsを記録します。
