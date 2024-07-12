@@ -17,13 +17,13 @@ categories:
   - R
 ---
 
-# やりたいこと
+## はじめに
 
 世の中にPythonを使ったSpotify分析はたくさんあるけど、Rでもやってみたい。
 
 まずは、RでSpotifyの情報にアクセスできるようになり、これまでなんとなく感じていた音楽を数値的に見てみる準備をする。
 
-# 準備
+
 ##  Spotifyの情報を使えるようにする
 
 ### パッケージのインストール
@@ -79,13 +79,13 @@ access_token <- get_spotify_access_token()
 
 :::
 
-# 分析
+## 分析
 
-[星野源のアルバム楽曲を分析してみる](https://azumaya2126.github.io/spotify_analysis/gen_hoshino.html)
+[星野源のアルバム楽曲をRで分析してみる](/docs/posts/spotify02_gen_hoshino/index.html)
 
 
 
-# 参考
+## 参考
 
 [spotifyr](https://www.rcharlie.com/spotifyr/)
 

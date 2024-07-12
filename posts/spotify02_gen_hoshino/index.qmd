@@ -1,5 +1,5 @@
 ---
-title: "星野源のアルバム楽曲を分析してみる"
+title: "星野源のアルバム楽曲をRで分析してみる"
 author: "azumaya"
 date: "2024/06/03"
 date-modified: "2024/06/04"
@@ -28,7 +28,7 @@ RでSpotify分析やってみる初回。
 
 ## 準備
 
-ライブラリ読み込みとAPI取得について、以下のコードの説明は[こちら](https://azumaya2126.github.io/spotify_analysis/)から。
+ライブラリ読み込みとAPI取得について、以下のコードの説明は[こちら](/docs/posts/spotify01/index.html)から。
 
 ```{r eval = FALSE}
 # パッケージ読み込み

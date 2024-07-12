@@ -10,7 +10,7 @@ website:
 
 format:
   html:
-    theme: zephyr
+    theme: Zephyr
     css: styles.css
     toc: true
     lang: ja
