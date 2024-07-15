@@ -6,7 +6,7 @@ date-modified: today
 
 ## [About](/about.html)
 
-興味、関心など
+興味、関心、趣味など
 
 ## [Posts](/post.html)
 
