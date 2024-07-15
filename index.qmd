@@ -6,9 +6,9 @@ date-modified: today
 
 ## [About](/about.html)
 
-azumayaについて
+興味、関心など
 
-## [Post](/post.html)
+## [Posts](/post.html)
 
 分析、勉強、練習など
 

@@ -7,18 +7,17 @@ title-block-banner: true
 
 ## About Me
 
-- 学士（経営学）
-- 経営学研究科所属M2
+- 経営学部→経営学研究科M2
 - 専門：管理会計
 
 
 ### スキル
 
-- R：3年目、日々精進
+- R：4年目、日々精進
 - Quarto：趣味
 - Python：基礎のみ
 - GitHub：まだまだこれから
-- Adobe Illustrator：6年目、まぁまぁ使える
+- Adobe Illustrator：6年目、ある程度使える
 - Adobe After Effects：使える
 
 いつかKaggleに参加したいです。
@@ -30,10 +29,10 @@ title-block-banner: true
 - 組織間管理会計
 - SCM（サプライチェーン・マネジメント）
 - 操作化
-- 構成概念妥当性
+- 妥当性
+― 信頼性
 - 異常検知
 - 品質管理
-- 原価計算
 - 構造主義
 
 ## Favorite
