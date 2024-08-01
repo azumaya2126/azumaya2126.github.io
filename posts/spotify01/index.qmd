@@ -5,16 +5,15 @@ date: "2024/05/26"
 date-modified: "today"
 format:
   html:
-    toc: TRUE
-    toc_depth: 2
-    toc_float: TRUE
-    highlight: "tango"
-    link-external-newwindow: TRUE
+    code-fold: FALSE 
+    # code-summary: "Show the code"
+    fig.align: "center"
+    lang: ja
 categories:
-  - Spotify
+  - R
   - Analysis
   - Music
-  - R
+  - Spotify
 ---
 
 ## はじめに
@@ -54,7 +53,7 @@ R人生で一度だけ`pacman`をインストールしておけば、「この�
 
 4.  Dashboardからappを選択して、Settings \> Basic InformationからCliant IDとClient secret（隠されている）をコピーして、以下の通り実行
 
-![](images/cliant.png){fig-align="center" width="674"}
+![](images/cliant.png){width="700"}
 
 ```{r eval = FALSE}
 Sys.setenv(SPOTIFY_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxx')
@@ -81,7 +80,7 @@ access_token <- get_spotify_access_token()
 
 ## 分析
 
-[星野源のアルバム楽曲をRで分析してみる](/docs/posts/spotify02_gen_hoshino/index.html)
+[星野源のアルバム楽曲をRで分析してみる](/posts/spotify02_gen_hoshino/index.html)
 
 
 

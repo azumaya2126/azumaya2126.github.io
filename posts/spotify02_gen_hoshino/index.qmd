@@ -3,20 +3,16 @@ title: "星野源のアルバム楽曲をRで分析してみる"
 author: "azumaya"
 date: "2024/06/03"
 date-modified: "2024/06/04"
-format:
+format: 
   html:
-    toc: TRUE
-    toc_depth: 2
-    toc_float: TRUE
-    highlight: "tango"
-    link-external-newwindow: TRUE
-    code-fold: true
+    code-fold: TRUE
     code-summary: "Show the code"
+    lang: ja
 categories:
-  - Spotify
+  - R
   - Analysis
   - Music
-  - R
+  - Spotify
 ---
 
 ## はじめに
@@ -28,7 +24,7 @@ RでSpotify分析やってみる初回。
 
 ## 準備
 
-ライブラリ読み込みとAPI取得について、以下のコードの説明は[こちら](/docs/posts/spotify01/index.html)から。
+ライブラリ読み込みとAPI取得について、以下のコードの説明は[こちら](/posts/spotify01/index.html)から。
 
 ```{r eval = FALSE}
 # パッケージ読み込み
@@ -322,8 +318,14 @@ gen %>%
   select(album, year, track, acousticness) %>%
   gt()
 ```
-1stアルバム[ばかのうた](https://open.spotify.com/album/0Q8mx1yHMWGG69vXrpiDrX?si=W1DODdr0Ri-TMsSiE9sM-A)と2ndアルバム[エピソード](https://open.spotify.com/album/63gQEvQUZN16y0uROFo1ir?si=ITVb5-NRQWOH8Txg0DmomA)からが多い。初期アルバムの数曲やシングルのカップリングから試していたポップさが、3rdアルバム[Stranger](https://open.spotify.com/album/2z8PuJutQ2cqlYpu9K0vxf?si=EdPfboAcRNG-eGZOi8SGVw)から
-（厳密には2ndアルバム後のシングル[フィルム](https://open.spotify.com/album/7qRrk4lJ3aukVtTe2c7Qyq?si=OPpYzcQCQ_W-oW2SSFvvuw)と[夢の外へ](https://open.spotify.com/album/16Qv1FdwQb59zNHBNG94lb?si=CdNsMm1iTV6wTF4XJvZj8w)から）だんだんと増えて今の星野源になっている感じが分かる。
+
+1stアルバム[ばかのうた](https://open.spotify.com/album/0Q8mx1yHMWGG69vXrpiDrX?si=W1DODdr0Ri-TMsSiE9sM-A)と
+2ndアルバム[エピソード](https://open.spotify.com/album/63gQEvQUZN16y0uROFo1ir?si=ITVb5-NRQWOH8Txg0DmomA)からが多い。
+初期アルバムの数曲やシングルのカップリングから試していたポップさが、
+3rdアルバム[Stranger](https://open.spotify.com/album/2z8PuJutQ2cqlYpu9K0vxf?si=EdPfboAcRNG-eGZOi8SGVw)から
+（厳密には2ndアルバム後のシングル[フィルム](https://open.spotify.com/album/7qRrk4lJ3aukVtTe2c7Qyq?si=OPpYzcQCQ_W-oW2SSFvvuw)と
+[夢の外へ](https://open.spotify.com/album/16Qv1FdwQb59zNHBNG94lb?si=CdNsMm1iTV6wTF4XJvZj8w)から）
+だんだんと増えて今の星野源になっている感じが分かる。
 
 ちなみに下位10曲。
 
@@ -339,7 +341,13 @@ gen %>%
   select(album, year, track, acousticness) %>%
   gt()
 ```
-3rdアルバムの[知らない](https://open.spotify.com/intl-ja/track/7rSLSZWOvx67HWeUOBqze8?si=91b1cf27d40a4a4c)が一番高くて0.06で、それ以外は全て4thアルバム[YELLOW DANCER](https://open.spotify.com/album/3Fj07HA1r20hRdF9eepuax?si=niKL_WFgRkym-fz51z-JRA)と5thアルバム[POP VIRUS](https://open.spotify.com/album/2GP1RmB0LvvuXOwOmrtG86?si=cYmpkrodSMmUXR19iQnHFQ)の曲たち。系統がガラッと変わっていることが分かる。
+3rdアルバムの
+[知らない](https://open.spotify.com/intl-ja/track/7rSLSZWOvx67HWeUOBqze8?si=91b1cf27d40a4a4c)
+が一番高くて0.06で、それ以外は全て4thアルバム
+[YELLOW DANCER](https://open.spotify.com/album/3Fj07HA1r20hRdF9eepuax?si=niKL_WFgRkym-fz51z-JRA)
+と5thアルバム
+[POP VIRUS](https://open.spotify.com/album/2GP1RmB0LvvuXOwOmrtG86?si=cYmpkrodSMmUXR19iQnHFQ)
+の曲たち。系統がガラッと変わっていることが分かる。
 
 ## おわりに
 

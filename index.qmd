@@ -2,6 +2,7 @@
 title: "azumaya web"
 date: 2024/07/12
 date-modified: today
+lang: ja
 ---
 
 ## [About](/about.html)

@@ -14,5 +14,9 @@ format:
     theme: Zephyr
     css: styles.css
     toc: true
+    toc_float: true
+    smooth-scroll: true
     lang: ja
-    link-external-newwindow: TRUE
+    link-external-newwindow: true
+    tidy: true
+    highlight: "pygments"

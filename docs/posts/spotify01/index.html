@@ -101,9 +101,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "サーチ"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 
 
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -165,10 +166,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-title">
 <h1 class="title">RでSpotifyの分析</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Spotify</div>
+    <div class="quarto-category">R</div>
     <div class="quarto-category">Analysis</div>
     <div class="quarto-category">Music</div>
-    <div class="quarto-category">R</div>
+    <div class="quarto-category">Spotify</div>
   </div>
   </div>
 
@@ -193,7 +194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">更新日</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">2024年7月15日</p>
+      <p class="date-modified">2024年8月1日</p>
     </div>
   </div>
     
@@ -239,11 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>必要事項に入力してSave（Redirect URLsは何を入れたら分からなかったけど例に書いてあるURL入れたらOKだった。いいの？）</p></li>
 <li><p>Dashboardからappを選択して、Settings &gt; Basic InformationからCliant IDとClient secret（隠されている）をコピーして、以下の通り実行</p></li>
 </ol>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/cliant.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="674"></p>
-</figure>
-</div>
+<p><img src="images/cliant.png" class="img-fluid" width="700"></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">SPOTIFY_CLIENT_ID =</span> <span class="st">'xxxxxxxxxxxxxxxxxxxxx'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">SPOTIFY_CLIENT_SECRET =</span> <span class="st">'xxxxxxxxxxxxxxxxxxxxx'</span>)</span>
@@ -265,7 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="分析" class="level2">
 <h2 class="anchored" data-anchor-id="分析">分析</h2>
-<p><a href="../..\docs/posts/spotify02_gen_hoshino/index.html">星野源のアルバム楽曲をRで分析してみる</a></p>
+<p><a href="../..\posts/spotify02_gen_hoshino/index.html">星野源のアルバム楽曲をRで分析してみる</a></p>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
@@ -706,4 +703,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
