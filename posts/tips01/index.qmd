@@ -1,0 +1,292 @@
+---
+title: "論文に載せる記述統計表を作る"
+author: "azumaya"
+date: "2024/08/23"
+# date-modified: "today"
+format: html
+categories:
+  - R
+  - Analysis
+  - Tips
+---
+
+## はじめに
+
+記述統計を出力する関数はたくさんあるけれど、どれも少しずつもの足りない。
+
+既存のパッケージに敬意を払ったあと、公式の場で発表できるくらいの記述統計表を出力するための関数を作る。
+
+## 目標
+
+今回はサンプルデータである`iris`を使って、`Species`ごとに4変数の基本統計量を出力する。
+
+```{r}
+head(iris)
+```
+
+目標は、以下の表のように、グループごとの記述統計表を作ること。
+論文の規定という体で大文字小文字の区別や桁数も再現してみたい（右側の相関行列は省略）。
+
+![出典：Hoetker, G. 2006. Do modular products lead to modular organizations? *Strategic Management Journal* 27 (6): 501–518.](images/tab2.png){fig-align="center"}
+
+
+
+## 既存のパッケージ
+
+基本統計量を出してくれる関数として、
+
+- base::summary()
+- summarytools::descr()
+- psych::describeBy()
+
+を確認する。
+
+```{r}
+#| message: false
+
+# パッケージの読み込み
+pacman::p_load(tidyverse, summarytools, psych, gt)
+```
+
+
+### base::summary()
+
+とりあえずの確認には便利だけど、標準偏差とサンプル数がない。
+
+```{r}
+summary(iris)
+```
+
+`filter()`を使って`Species`ごとに出力することはできる。
+
+```{r}
+iris %>% 
+  filter(Species == "setosa") %>%
+  summary()
+```
+
+### summarytools::descr()
+
+まずはそのままの`descr()`。
+
+```{r}
+iris %>% 
+  descr()
+```
+
+`group_by()`をかませて、不要な統計量を除くとすっきり、かなり見やすい！
+変数が多すぎないときはこれでも十分かもしれない。
+
+```{r}
+iris %>% 
+  group_by(Species) %>%
+  descr(stats = c("mean", "sd", "min", "max")) # 変数の指定はMeanでなくmean
+```
+
+ただ、このままだと`gt()`に渡せないのと、統計量と変数の行列を入れ替えるのが手間すぎるので断念。
+
+### psych::describeBy()
+
+まずはそのままの`describe()`。変数が縦にくるタイプ。
+
+```{r}
+iris %>% 
+  psych::describe()
+```
+
+
+`describeBy()`を使うことで、簡単にやりたいことに近づいた。
+
+```{r}
+iris %>% 
+  psych::describeBy(iris$Species)
+```
+
+不要な列を削除して表を扱いやすくしてみる。
+
+```{r}
+tab <- iris %>% 
+  describeBy(iris$Species, 
+             mat = TRUE # 行列形式で出力
+            ) 
+
+tab <- tab[, names(tab) %in% c("group1", "mean", "sd", "min", "max")] 
+tab
+```
+
+`Speceies`の`setosa`だけ取り出して、細部を再現してみようとするけど、`gt()`に渡すと1列目が消えたり面倒になったのでここで撤退。
+
+```{r}
+tab %>% 
+  filter(group1 == "setosa") %>% 
+  mutate(Mean = round(mean, 2), 
+         S.D. = round(sd, 2),
+         Min. = round(min, 2), # minとmaxは0があって2桁に見えない
+         Max. = round(max, 2)  # 解決法は後述
+         ) %>% 
+  select(Mean:Max.) %>%
+  head(4) %>% 
+  gt()
+
+```
+
+
+
+## 関数を自作する
+
+論文の表を再現するために`tidyverse::summarise()`と`gt()`を使って関数を作ってみる。
+
+まずは、`across()`を使ってすべての変数の統計量を出す。
+このタイミングで、基本統計量の厳密な表記も指定しておく。
+
+```{r}
+iris %>%
+  summarise(across(.cols = where(is.numeric), # 数値型のすべての変数について
+                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), # 今回は欠損値ないけど
+                               S.D. = ~ sd(.x, na.rm = TRUE),
+                               Min. = ~ min(.x, na.rm = TRUE),
+                               Max. = ~ max(.x, na.rm = TRUE)),
+                   .names = "{col}-{fn}") # "列名-関数名"の形式で列名を作る
+              ) %>% 
+  round(2) %>% # 小数点以下2桁に
+  format(nsmall = 2) # 0も表示させて見た目も2桁に
+```
+`pivot_loner()`で表に。
+
+```{r}
+iris %>%
+  summarise(across(.cols = where(is.numeric), 
+                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), 
+                               S.D. = ~ sd(.x, na.rm = TRUE),
+                               Min. = ~ min(.x, na.rm = TRUE),
+                               Max. = ~ max(.x, na.rm = TRUE)),
+                   .names = "{col}-{fn}") 
+              ) %>% 
+  round(2) %>% 
+  format(nsmall = 2) %>% 
+  pivot_longer(cols = everything(), # 全ての列を縦に
+               names_to = c("variable", "stat"), # variableとstatに分ける
+               names_sep = "-" # -でわける
+               ) 
+```
+`pivot_wider()`で横に。
+
+```{r}
+iris %>%
+  summarise(across(.cols = where(is.numeric), 
+                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), 
+                               S.D. = ~ sd(.x, na.rm = TRUE),
+                               Min. = ~ min(.x, na.rm = TRUE),
+                               Max. = ~ max(.x, na.rm = TRUE)),
+                   .names = "{col}-{fn}") 
+              ) %>% 
+  round(2) %>% 
+  format(nsmall = 2) %>% 
+  pivot_longer(cols = everything(), 
+               names_to = c("variable", "stat"), 
+               names_sep = "-" 
+               ) %>% 
+  pivot_wider(names_from = stat, # statを列に
+              values_from = value # valueの値に
+              ) 
+```
+
+`gt()`を使って見た目をより近づけていく。
+
+```{r}
+iris %>%
+  summarise(across(.cols = where(is.numeric), 
+                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), 
+                               S.D. = ~ sd(.x, na.rm = TRUE),
+                               Min. = ~ min(.x, na.rm = TRUE),
+                               Max. = ~ max(.x, na.rm = TRUE)),
+                   .names = "{col}-{fn}") 
+              ) %>% 
+  round(2) %>% 
+  format(nsmall = 2) %>% 
+  pivot_longer(cols = everything(), 
+               names_to = c("variable", "stat"), 
+               names_sep = "-" 
+               ) %>% 
+  pivot_wider(names_from = stat, 
+              values_from = value 
+              ) %>% 
+  cbind(num = c(1:4),.) %>% # 変数番号をつける
+  gt() %>% 
+  cols_label(num = "",
+             variable = "") %>% # 列名を消す
+  tab_header(title = "グループ名") %>%  # タイトル
+  tab_options(heading.align = "left") %>%   # タイトルを左揃えに
+  tab_footnote(footnote = paste("*","サンプル数", "observations.")) # 脚注
+  
+```
+
+完成直前！グループごとに出力できるように微調整して関数にまとめる。
+
+::: {.callout-tip appearance="simple"}
+`rlang`パッケージの記法、絶賛勉強中です。ムズイ。
+:::
+
+
+```{r}
+summary_stats <- function(df, g) { 
+  # gをシンボルに変換
+  g <- rlang::enquo(g)
+  
+  # グループごとのサンプル数を計算
+  n <- df %>% 
+    filter(Species == !!g) %>% 
+    nrow()
+  
+  df %>%
+    filter(Species == !!g) %>% #
+    summarise(across(where(is.numeric), 
+                     list(Mean = ~ mean(.x, na.rm = TRUE),
+                          S.D. = ~ sd(.x, na.rm = TRUE),
+                          Min. = ~ min(.x, na.rm = TRUE),
+                          Max. = ~ max(.x, na.rm = TRUE)),
+                     .names = "{col}-{fn}")) %>% 
+    round(2) %>% 
+    format(nsmall = 2) %>% 
+    pivot_longer(cols = everything(), 
+                 names_to = c("variable", "stat"), 
+                 names_sep = "-") %>% 
+    pivot_wider(names_from = stat, 
+                values_from = value) %>% 
+    cbind(num = c(1:4),.) %>% 
+    gt() %>% 
+    cols_label(num = "",
+               variable = "") %>% 
+    tab_header(title = rlang::as_name(g)) %>%  # タイトルにグループ名gを指定
+    tab_options(heading.align = "left") %>%   
+    tab_footnote(footnote = paste("*",n, "observations.")) # サンプル数nをここで使う
+}
+
+```
+
+```{r}
+summary_stats(iris, "setosa")
+summary_stats(iris, "versicolor")
+summary_stats(iris, "virginica")
+```
+
+
+できた～～～！
+
+
+
+## おわりに
+
+データフレームを.xlsx出力して、Excelで見た目整えた方が楽なのでは？って思いました（本末転倒）。
+
+`summarytools::descr()`も`psych::describeBy()`も全然使えるけど、やっぱりtidyverseがお気に入りかもしれない。
+R上でここまで再現できるんだという学びになりました。
+
+今後は関数をより気軽に作るために非標準評価 (Non Standard Evaluation: NSE) を勉強していきたいです。
+
+
+## 参考
+
+[gt入門](https://www.jaysong.net/tutorial/R/gt.html)
+
+[雰囲気で理解するtidy evaluation(1): tidy evaluationの導入](https://qiita.com/uri/items/6d5f285280387dff0caa)

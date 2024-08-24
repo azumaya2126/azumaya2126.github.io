@@ -2,14 +2,13 @@
 title: "azumaya web"
 date: 2024/07/12
 date-modified: today
-lang: ja
 ---
 
 ## [About](/about.html)
 
 興味、関心、趣味など
 
-## [Posts](/post.html)
+## [Posts](/posts.html)
 
 分析、勉強、練習など
 

@@ -7,7 +7,6 @@ format:
   html:
     code-fold: TRUE
     code-summary: "Show the code"
-    lang: ja
 categories:
   - R
   - Analysis
@@ -26,7 +25,8 @@ RでSpotify分析やってみる初回。
 
 ライブラリ読み込みとAPI取得について、以下のコードの説明は[こちら](/posts/spotify01/index.html)から。
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 # パッケージ読み込み
 pacman::p_load(spotifyr, tidyverse, 
                corrplot, # 相関行列表を出力したい
@@ -38,17 +38,17 @@ Sys.setenv(SPOTIFY_CLIENT_SECRET = "xxxxxxxxxxxxxxxxxxxxx")
 access_token <- get_spotify_access_token()
 ```
 
-```{r include = FALSE}
+```{r}
+#| include: false
 pacman::p_load(spotifyr, tidyverse, corrplot, gt)
 Sys.setenv(SPOTIFY_CLIENT_ID = "44af3e1025034575bf0766d197d738e6")
 Sys.setenv(SPOTIFY_CLIENT_SECRET = "d96455b022fe4e04876162dfab9c66b5")
 access_token <- get_spotify_access_token()
+gen <- get_artist_audio_features("Gen Hoshino") 
 ```
 
 
-
 ## 楽曲情報取得
-
 
 `get_artist_audio_features`関数を使って、アーティストの楽曲情報を取りに行く。引数にはアーティスト名もしくはアーティストIDを入れる。
 
@@ -368,6 +368,8 @@ gen %>%
 参考にしながら作ってみました。
 
 ```{r}
+#| classes: preview-image
+
 # デフォルトだと黒文字が見えないので、見えるくらいに5段階で色指定
 col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
 

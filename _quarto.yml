@@ -3,20 +3,20 @@ project:
   output-dir: docs
 
 website:
-  title: "azumaya"
+  title: "azumaya web"
   navbar:
     left:
       - about.qmd
-      - post.qmd
+      - posts.qmd
+    right:
+      - icon: github
+        href: https://github.com/azumaya2126
+      - icon: twitter
+        href: https://twitter.com/18azumaya
 
 format:
   html:
     theme: Zephyr
     css: styles.css
-    toc: true
-    toc_float: true
-    smooth-scroll: true
     lang: ja
     link-external-newwindow: true
-    tidy: true
-    highlight: "pygments"

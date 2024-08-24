@@ -2,13 +2,12 @@
 title: "RでSpotifyの分析"
 author: "azumaya"
 date: "2024/05/26"
-date-modified: "today"
+date-modified: "2024/06/03"
 format:
   html:
     code-fold: FALSE 
     # code-summary: "Show the code"
     fig.align: "center"
-    lang: ja
 categories:
   - R
   - Analysis

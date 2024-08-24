@@ -1,0 +1,146 @@
+---
+title: "source関数で自作関数を呼び出す"
+author: "azumaya"
+date: "2024/08/24"
+# date-modified: "today"
+format: html
+# image: image.jpg
+categories:
+  - R
+  - Analysis
+  - Tips
+---
+
+## はじめに
+
+自作関数をはじめ、他ファイルで定義したオブジェクトを簡単に呼び出したい。
+
+`source`関数を使って、ファイルの壁を飛び越える。
+
+## 関数を自作した
+
+[前回](https://azumaya2126.github.io/mysite/posts/tips01)、記述統計表を出力する関数`summary_stats()`を自作した。
+
+```{r}
+#| eval: false
+summary_stats <- function(df, g) { 
+  # gをシンボルに変換
+  g <- rlang::enquo(g)
+  
+  # グループごとのサンプル数を計算
+  n <- df %>% 
+    filter(Species == !!g) %>% 
+    nrow()
+  
+  df %>%
+    filter(Species == !!g) %>% #
+    summarise(across(where(is.numeric), 
+                     list(Mean = ~ mean(.x, na.rm = TRUE),
+                          S.D. = ~ sd(.x, na.rm = TRUE),
+                          Min. = ~ min(.x, na.rm = TRUE),
+                          Max. = ~ max(.x, na.rm = TRUE)),
+                     .names = "{col}-{fn}")) %>% 
+    round(2) %>% 
+    format(nsmall = 2) %>% 
+    pivot_longer(cols = everything(), 
+                 names_to = c("variable", "stat"), 
+                 names_sep = "-") %>% 
+    pivot_wider(names_from = stat, 
+                values_from = value) %>% 
+    cbind(num = c(1:4),.) %>% 
+    gt() %>% 
+    cols_label(num = "",
+               variable = "") %>% 
+    tab_header(title = rlang::as_name(g)) %>%  # タイトルにグループ名gを指定
+    tab_options(heading.align = "left") %>%   
+    tab_footnote(footnote = paste("*",n, "observations.")) # サンプル数nをここで使う
+}
+```
+
+## 自作関数をいつでも使いたい
+
+なぜ呼び出したい？
+
+### 1. 一度作った関数を何度も使いたい
+
+頑張って関数を作ったはいいものの、これを毎回コピペするのは面倒。
+これみなさんどうしているんでしょうか。
+
+自作関数を集めたRファイルを作っていつでも呼び出せるようにしておくと便利な気がしている。
+
+::: {.callout-tip appearance="simple"}
+他にもグラフ描画だったり、相関行列のテンプレにも応用できそう。
+グラフによく使うカラーパレットを指定しておいたり。（.scssの設定みたいだな）
+:::
+
+### 2. .qmdに長いコードを書きたくない
+
+雑多な分析を.Rで行い、その一部を取り出して.qmdのプレゼンテーションやドキュメントにまとめたい場面が多々ある。
+
+そんな時、.qmd上で長々と複雑なコードを書きたくないというのが正直なところ。 レンダリングに時間がかかるし、書き換え忘れのエラーが面倒だし、`cache`オプションが使いこなせていない…。
+
+今回作ったような自作関数だけでなく、もはやオブジェクトのすべてを呼び出せた方がありがたい。
+
+## 呼び出してみる
+
+自作関数含むオブジェクトは、`source`関数で呼び出せる。
+
+### `source`関数がないとき
+
+`functions.R`に作った関数`summary_stats()`を使いたいとき、`fuga.qmd`上で直接定義していない場合はエラーとなる。
+
+```{r filename = "fuga.qmd"}
+#| error: true
+summary_stats(df)
+```
+
+### `source`関数があるとき
+
+`fuga.qmd`上で、`summary_stats()`を定義した`functions.R`を呼び出すことで関数を使えるようになる。
+
+```{r filename = "fuga.qmd"}
+#| eval: false
+source("./functions.R")
+```
+
+**`functions.R`を開いたときのEnvironmentペインが再現される**みたいなイメージと認識している。
+そのため、関数以外にも変数やデータがそのまま使えるようになる。
+
+::: {.callout-important appearance="simple"}
+`functions.R`のコードを全て実行するので、あまりにも重いと時間がかかるし、ここでエラーが出ると先に進めない。
+上から下まで順番に実行されることを前提で、変数名の定義やコメントアウトを上手いことする必要がある。
+:::
+
+## ほかの発想？
+
+`source()`では、.Rを上から下まで実行してオブジェクトを呼び出していたけど、`functions.R`のオブジェクト自体を保存して、それを呼び出す方法もある。
+
+`functions.R`上で作った`summary_stats()`を`saveRDS()`で保存しておく。
+引数に変数名を入れて実行すると、`summary_stats.obj`が作成される。
+
+```{r filename = "functions.R"}
+#| eval: false
+saveRDS(summary_stats)
+```
+
+`fuga.qmd`上で使いたい場合は、`readRDS()`で呼び出して変数に代入する。
+
+```{r filename = "fuga.qmd"}
+#| eval: false
+summary_stats <- readRDS("./summary_stats.obj")
+```
+
+
+::: {.callout-important appearance="simple"}
+`source()`と違って、.Rファイルの中身を実行するわけではないので、時間は短縮できる。
+ただ、`summary_stats()`の定義を書き換えた場合、同時に`saveRDS()`も実行しないと`summary_stats.obj`の中身が上書きされない。自作関数が増えていくと全然面倒かも。
+:::
+
+
+## おわりに
+
+ファイルをまたいで呼び出したい内容によって、いろいろな方法がありそう。
+
+雑多な分析の.Rと、きれいにまとめたい.qmdの行き来が永遠の課題だ～～～。
+
+`cache`オプションを使いこなすしかないのか。
