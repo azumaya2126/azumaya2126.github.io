@@ -1,16 +1,12 @@
 freeze: auto
+
 title-block-banner: true
 last-updated: last-modified
 output-dir: docs
 
-execute:
-  echo: false
-  warning: false
-  message: false
-
 format:
   html:
-    code-tools: true
+    # code-tools: true
     toc: true
     toc_float: true
     smooth-scroll: true

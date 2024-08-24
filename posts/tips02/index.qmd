@@ -19,7 +19,7 @@ categories:
 
 ## 関数を自作した
 
-[前回](https://azumaya2126.github.io/mysite/posts/tips01)、記述統計表を出力する関数`summary_stats()`を自作した。
+[前回](/posts/tips01.html)、記述統計表を出力する関数`summary_stats()`を自作した。
 
 ```{r}
 #| eval: false

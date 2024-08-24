@@ -155,7 +155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <div class="quarto-title-block"><div><h1 class="title">論文に載せる記述統計表を作る</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> コード</button></div></div>
+      <h1 class="title">論文に載せる記述統計表を作る</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R</div>
                 <div class="quarto-category">Analysis</div>
@@ -223,6 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="目標">目標</h2>
 <p>今回はサンプルデータである<code>iris</code>を使って、<code>Species</code>ごとに4変数の基本統計量を出力する。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 1          5.1         3.5          1.4         0.2  setosa
@@ -250,10 +251,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>psych::describeBy()</li>
 </ul>
 <p>を確認する。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># パッケージの読み込み</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, summarytools, psych, gt)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <section id="basesummary" class="level3">
 <h3 class="anchored" data-anchor-id="basesummary">base::summary()</h3>
 <p>とりあえずの確認には便利だけど、標準偏差とサンプル数がない。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(iris)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
  Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  
@@ -273,6 +279,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><code>filter()</code>を使って<code>Species</code>ごとに出力することはできる。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Species <span class="sc">==</span> <span class="st">"setosa"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
  Min.   :4.300   Min.   :2.300   Min.   :1.000   Min.   :0.100  
@@ -295,6 +304,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="summarytoolsdescr">summarytools::descr()</h3>
 <p>まずはそのままの<code>descr()</code>。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Non-numerical variable(s) ignored: Species</code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Descriptive Statistics  
 iris  
@@ -321,6 +335,9 @@ N: 150
 </div>
 <p><code>group_by()</code>をかませて、不要な統計量を除くとすっきり、かなり見やすい！ 変数が多すぎないときはこれでも十分かもしれない。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Species) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>(<span class="at">stats =</span> <span class="fu">c</span>(<span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"min"</span>, <span class="st">"max"</span>)) <span class="co"># 変数の指定はMeanでなくmean</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Descriptive Statistics  
 iris  
@@ -361,6 +378,8 @@ N: 50
 <h3 class="anchored" data-anchor-id="psychdescribeby">psych::describeBy()</h3>
 <p>まずはそのままの<code>describe()</code>。変数が縦にくるタイプ。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  psych<span class="sc">::</span><span class="fu">describe</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             vars   n mean   sd median trimmed  mad min max range  skew
 Sepal.Length    1 150 5.84 0.83   5.80    5.81 1.04 4.3 7.9   3.6  0.31
@@ -378,6 +397,8 @@ Species*        -1.52 0.07</code></pre>
 </div>
 <p><code>describeBy()</code>を使うことで、簡単にやりたいことに近づいた。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  psych<span class="sc">::</span><span class="fu">describeBy</span>(iris<span class="sc">$</span>Species)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Descriptive statistics by group 
@@ -426,6 +447,13 @@ Species      0.00</code></pre>
 </div>
 <p>不要な列を削除して表を扱いやすくしてみる。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">describeBy</span>(iris<span class="sc">$</span>Species, </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">mat =</span> <span class="cn">TRUE</span> <span class="co"># 行列形式で出力</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>            ) </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> tab[, <span class="fu">names</span>(tab) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"group1"</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"min"</span>, <span class="st">"max"</span>)] </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>tab</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  group1  mean        sd min max
 Sepal.Length1     setosa 5.006 0.3524897 4.3 5.8
@@ -447,24 +475,34 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
 </div>
 <p><code>Speceies</code>の<code>setosa</code>だけ取り出して、細部を再現してみようとするけど、<code>gt()</code>に渡すと1列目が消えたり面倒になったのでここで撤退。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tab <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group1 <span class="sc">==</span> <span class="st">"setosa"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Mean =</span> <span class="fu">round</span>(mean, <span class="dv">2</span>), </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">S.D. =</span> <span class="fu">round</span>(sd, <span class="dv">2</span>),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">Min. =</span> <span class="fu">round</span>(min, <span class="dv">2</span>), <span class="co"># minとmaxは0があって2桁に見えない</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">Max. =</span> <span class="fu">round</span>(max, <span class="dv">2</span>)  <span class="co"># 解決法は後述</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Mean<span class="sc">:</span>Max.) <span class="sc">%&gt;%</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="smqbqakijz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#smqbqakijz table {
+<div id="tlnbxrtliu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tlnbxrtliu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#smqbqakijz thead, #smqbqakijz tbody, #smqbqakijz tfoot, #smqbqakijz tr, #smqbqakijz td, #smqbqakijz th {
+#tlnbxrtliu thead, #tlnbxrtliu tbody, #tlnbxrtliu tfoot, #tlnbxrtliu tr, #tlnbxrtliu td, #tlnbxrtliu th {
   border-style: none;
 }
 
-#smqbqakijz p {
+#tlnbxrtliu p {
   margin: 0;
   padding: 0;
 }
 
-#smqbqakijz .gt_table {
+#tlnbxrtliu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -490,12 +528,12 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_caption {
+#tlnbxrtliu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#smqbqakijz .gt_title {
+#tlnbxrtliu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -507,7 +545,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-width: 0;
 }
 
-#smqbqakijz .gt_subtitle {
+#tlnbxrtliu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -519,7 +557,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-width: 0;
 }
 
-#smqbqakijz .gt_heading {
+#tlnbxrtliu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -531,13 +569,13 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_bottom_border {
+#tlnbxrtliu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_col_headings {
+#tlnbxrtliu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -552,7 +590,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_col_heading {
+#tlnbxrtliu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -572,7 +610,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#smqbqakijz .gt_column_spanner_outer {
+#tlnbxrtliu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -584,15 +622,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 4px;
 }
 
-#smqbqakijz .gt_column_spanner_outer:first-child {
+#tlnbxrtliu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#smqbqakijz .gt_column_spanner_outer:last-child {
+#tlnbxrtliu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#smqbqakijz .gt_column_spanner {
+#tlnbxrtliu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -604,11 +642,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   width: 100%;
 }
 
-#smqbqakijz .gt_spanner_row {
+#tlnbxrtliu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#smqbqakijz .gt_group_heading {
+#tlnbxrtliu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -634,7 +672,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   text-align: left;
 }
 
-#smqbqakijz .gt_empty_group_heading {
+#tlnbxrtliu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -649,15 +687,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: middle;
 }
 
-#smqbqakijz .gt_from_md > :first-child {
+#tlnbxrtliu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#smqbqakijz .gt_from_md > :last-child {
+#tlnbxrtliu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#smqbqakijz .gt_row {
+#tlnbxrtliu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -676,7 +714,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#smqbqakijz .gt_stub {
+#tlnbxrtliu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -689,7 +727,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#smqbqakijz .gt_stub_row_group {
+#tlnbxrtliu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -703,15 +741,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: top;
 }
 
-#smqbqakijz .gt_row_group_first td {
+#tlnbxrtliu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#smqbqakijz .gt_row_group_first th {
+#tlnbxrtliu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#smqbqakijz .gt_summary_row {
+#tlnbxrtliu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -721,16 +759,16 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#smqbqakijz .gt_first_summary_row {
+#tlnbxrtliu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_first_summary_row.thick {
+#tlnbxrtliu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#smqbqakijz .gt_last_summary_row {
+#tlnbxrtliu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -740,7 +778,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_grand_summary_row {
+#tlnbxrtliu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -750,7 +788,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#smqbqakijz .gt_first_grand_summary_row {
+#tlnbxrtliu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -760,7 +798,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_last_grand_summary_row_top {
+#tlnbxrtliu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -770,11 +808,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_striped {
+#tlnbxrtliu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#smqbqakijz .gt_table_body {
+#tlnbxrtliu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -783,7 +821,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_footnotes {
+#tlnbxrtliu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -797,7 +835,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_footnote {
+#tlnbxrtliu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -806,7 +844,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#smqbqakijz .gt_sourcenotes {
+#tlnbxrtliu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -820,7 +858,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#smqbqakijz .gt_sourcenote {
+#tlnbxrtliu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -828,72 +866,72 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#smqbqakijz .gt_left {
+#tlnbxrtliu .gt_left {
   text-align: left;
 }
 
-#smqbqakijz .gt_center {
+#tlnbxrtliu .gt_center {
   text-align: center;
 }
 
-#smqbqakijz .gt_right {
+#tlnbxrtliu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#smqbqakijz .gt_font_normal {
+#tlnbxrtliu .gt_font_normal {
   font-weight: normal;
 }
 
-#smqbqakijz .gt_font_bold {
+#tlnbxrtliu .gt_font_bold {
   font-weight: bold;
 }
 
-#smqbqakijz .gt_font_italic {
+#tlnbxrtliu .gt_font_italic {
   font-style: italic;
 }
 
-#smqbqakijz .gt_super {
+#tlnbxrtliu .gt_super {
   font-size: 65%;
 }
 
-#smqbqakijz .gt_footnote_marks {
+#tlnbxrtliu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#smqbqakijz .gt_asterisk {
+#tlnbxrtliu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#smqbqakijz .gt_indent_1 {
+#tlnbxrtliu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#smqbqakijz .gt_indent_2 {
+#tlnbxrtliu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#smqbqakijz .gt_indent_3 {
+#tlnbxrtliu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#smqbqakijz .gt_indent_4 {
+#tlnbxrtliu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#smqbqakijz .gt_indent_5 {
+#tlnbxrtliu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#smqbqakijz .katex-display {
+#tlnbxrtliu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#smqbqakijz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#tlnbxrtliu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -945,6 +983,16 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
 <p>論文の表を再現するために<code>tidyverse::summarise()</code>と<code>gt()</code>を使って関数を作ってみる。</p>
 <p>まずは、<code>across()</code>を使ってすべての変数の統計量を出す。 このタイミングで、基本統計量の厳密な表記も指定しておく。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.numeric), <span class="co"># 数値型のすべての変数について</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 今回は欠損値ないけど</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>) <span class="co"># "列名-関数名"の形式で列名を作る</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="co"># 小数点以下2桁に</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="co"># 0も表示させて見た目も2桁に</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Sepal.Length-Mean Sepal.Length-S.D. Sepal.Length-Min. Sepal.Length-Max.
 1              5.84              0.83              4.30              7.90
@@ -958,6 +1006,20 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
 </div>
 <p><code>pivot_loner()</code>で表に。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.numeric), </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>) </span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="co"># 全ての列を縦に</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"variable"</span>, <span class="st">"stat"</span>), <span class="co"># variableとstatに分ける</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"-"</span> <span class="co"># -でわける</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>               ) </span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 16 × 3
    variable     stat  value   
@@ -982,6 +1044,23 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
 </div>
 <p><code>pivot_wider()</code>で横に。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.numeric), </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>) </span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), </span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"variable"</span>, <span class="st">"stat"</span>), </span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"-"</span> </span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stat, <span class="co"># statを列に</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> value <span class="co"># valueの値に</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>              ) </span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 5
   variable     Mean     S.D.     Min.     Max.    
@@ -994,24 +1073,48 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
 </div>
 <p><code>gt()</code>を使って見た目をより近づけていく。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.numeric), </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>) </span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), </span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"variable"</span>, <span class="st">"stat"</span>), </span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"-"</span> </span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stat, </span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> value </span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="at">num =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>),.) <span class="sc">%&gt;%</span> <span class="co"># 変数番号をつける</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">num =</span> <span class="st">""</span>,</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">variable =</span> <span class="st">""</span>) <span class="sc">%&gt;%</span> <span class="co"># 列名を消す</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"グループ名"</span>) <span class="sc">%&gt;%</span>  <span class="co"># タイトル</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">heading.align =</span> <span class="st">"left"</span>) <span class="sc">%&gt;%</span>   <span class="co"># タイトルを左揃えに</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_footnote</span>(<span class="at">footnote =</span> <span class="fu">paste</span>(<span class="st">"*"</span>,<span class="st">"サンプル数"</span>, <span class="st">"observations."</span>)) <span class="co"># 脚注</span></span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="gcftggvvyf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gcftggvvyf table {
+<div id="vwqajfobcf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vwqajfobcf table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#gcftggvvyf thead, #gcftggvvyf tbody, #gcftggvvyf tfoot, #gcftggvvyf tr, #gcftggvvyf td, #gcftggvvyf th {
+#vwqajfobcf thead, #vwqajfobcf tbody, #vwqajfobcf tfoot, #vwqajfobcf tr, #vwqajfobcf td, #vwqajfobcf th {
   border-style: none;
 }
 
-#gcftggvvyf p {
+#vwqajfobcf p {
   margin: 0;
   padding: 0;
 }
 
-#gcftggvvyf .gt_table {
+#vwqajfobcf .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1037,12 +1140,12 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_caption {
+#vwqajfobcf .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#gcftggvvyf .gt_title {
+#vwqajfobcf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1054,7 +1157,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-width: 0;
 }
 
-#gcftggvvyf .gt_subtitle {
+#vwqajfobcf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1066,7 +1169,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-width: 0;
 }
 
-#gcftggvvyf .gt_heading {
+#vwqajfobcf .gt_heading {
   background-color: #FFFFFF;
   text-align: left;
   border-bottom-color: #FFFFFF;
@@ -1078,13 +1181,13 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_bottom_border {
+#vwqajfobcf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_col_headings {
+#vwqajfobcf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1099,7 +1202,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_col_heading {
+#vwqajfobcf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1119,7 +1222,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#gcftggvvyf .gt_column_spanner_outer {
+#vwqajfobcf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1131,15 +1234,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 4px;
 }
 
-#gcftggvvyf .gt_column_spanner_outer:first-child {
+#vwqajfobcf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gcftggvvyf .gt_column_spanner_outer:last-child {
+#vwqajfobcf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gcftggvvyf .gt_column_spanner {
+#vwqajfobcf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1151,11 +1254,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   width: 100%;
 }
 
-#gcftggvvyf .gt_spanner_row {
+#vwqajfobcf .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#gcftggvvyf .gt_group_heading {
+#vwqajfobcf .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1181,7 +1284,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   text-align: left;
 }
 
-#gcftggvvyf .gt_empty_group_heading {
+#vwqajfobcf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1196,15 +1299,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: middle;
 }
 
-#gcftggvvyf .gt_from_md > :first-child {
+#vwqajfobcf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gcftggvvyf .gt_from_md > :last-child {
+#vwqajfobcf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gcftggvvyf .gt_row {
+#vwqajfobcf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1223,7 +1326,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#gcftggvvyf .gt_stub {
+#vwqajfobcf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1236,7 +1339,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#gcftggvvyf .gt_stub_row_group {
+#vwqajfobcf .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1250,15 +1353,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: top;
 }
 
-#gcftggvvyf .gt_row_group_first td {
+#vwqajfobcf .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#gcftggvvyf .gt_row_group_first th {
+#vwqajfobcf .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#gcftggvvyf .gt_summary_row {
+#vwqajfobcf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1268,16 +1371,16 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#gcftggvvyf .gt_first_summary_row {
+#vwqajfobcf .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_first_summary_row.thick {
+#vwqajfobcf .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#gcftggvvyf .gt_last_summary_row {
+#vwqajfobcf .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1287,7 +1390,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_grand_summary_row {
+#vwqajfobcf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1297,7 +1400,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#gcftggvvyf .gt_first_grand_summary_row {
+#vwqajfobcf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1307,7 +1410,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_last_grand_summary_row_top {
+#vwqajfobcf .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1317,11 +1420,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_striped {
+#vwqajfobcf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gcftggvvyf .gt_table_body {
+#vwqajfobcf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1330,7 +1433,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_footnotes {
+#vwqajfobcf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1344,7 +1447,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_footnote {
+#vwqajfobcf .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1353,7 +1456,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#gcftggvvyf .gt_sourcenotes {
+#vwqajfobcf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1367,7 +1470,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#gcftggvvyf .gt_sourcenote {
+#vwqajfobcf .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1375,72 +1478,72 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#gcftggvvyf .gt_left {
+#vwqajfobcf .gt_left {
   text-align: left;
 }
 
-#gcftggvvyf .gt_center {
+#vwqajfobcf .gt_center {
   text-align: center;
 }
 
-#gcftggvvyf .gt_right {
+#vwqajfobcf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gcftggvvyf .gt_font_normal {
+#vwqajfobcf .gt_font_normal {
   font-weight: normal;
 }
 
-#gcftggvvyf .gt_font_bold {
+#vwqajfobcf .gt_font_bold {
   font-weight: bold;
 }
 
-#gcftggvvyf .gt_font_italic {
+#vwqajfobcf .gt_font_italic {
   font-style: italic;
 }
 
-#gcftggvvyf .gt_super {
+#vwqajfobcf .gt_super {
   font-size: 65%;
 }
 
-#gcftggvvyf .gt_footnote_marks {
+#vwqajfobcf .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#gcftggvvyf .gt_asterisk {
+#vwqajfobcf .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#gcftggvvyf .gt_indent_1 {
+#vwqajfobcf .gt_indent_1 {
   text-indent: 5px;
 }
 
-#gcftggvvyf .gt_indent_2 {
+#vwqajfobcf .gt_indent_2 {
   text-indent: 10px;
 }
 
-#gcftggvvyf .gt_indent_3 {
+#vwqajfobcf .gt_indent_3 {
   text-indent: 15px;
 }
 
-#gcftggvvyf .gt_indent_4 {
+#vwqajfobcf .gt_indent_4 {
   text-indent: 20px;
 }
 
-#gcftggvvyf .gt_indent_5 {
+#vwqajfobcf .gt_indent_5 {
   text-indent: 25px;
 }
 
-#gcftggvvyf .katex-display {
+#vwqajfobcf .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#gcftggvvyf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#vwqajfobcf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1515,24 +1618,59 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
 </div>
 </div>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>summary_stats <span class="ot">&lt;-</span> <span class="cf">function</span>(df, g) { </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># gをシンボルに変換</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> rlang<span class="sc">::</span><span class="fu">enquo</span>(g)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># グループごとのサンプル数を計算</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Species <span class="sc">==</span> <span class="sc">!!</span>g) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>()</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Species <span class="sc">==</span> <span class="sc">!!</span>g) <span class="sc">%&gt;%</span> <span class="co">#</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), </span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>                          <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>                     <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), </span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"variable"</span>, <span class="st">"stat"</span>), </span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_sep =</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stat, </span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">values_from =</span> value) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">num =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>),.) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cols_label</span>(<span class="at">num =</span> <span class="st">""</span>,</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>               <span class="at">variable =</span> <span class="st">""</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tab_header</span>(<span class="at">title =</span> rlang<span class="sc">::</span><span class="fu">as_name</span>(g)) <span class="sc">%&gt;%</span>  <span class="co"># タイトルにグループ名gを指定</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tab_options</span>(<span class="at">heading.align =</span> <span class="st">"left"</span>) <span class="sc">%&gt;%</span>   </span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tab_footnote</span>(<span class="at">footnote =</span> <span class="fu">paste</span>(<span class="st">"*"</span>,n, <span class="st">"observations."</span>)) <span class="co"># サンプル数nをここで使う</span></span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_stats</span>(iris, <span class="st">"setosa"</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="vspzyecncx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vspzyecncx table {
+<div id="cmakvafcpe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#cmakvafcpe table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vspzyecncx thead, #vspzyecncx tbody, #vspzyecncx tfoot, #vspzyecncx tr, #vspzyecncx td, #vspzyecncx th {
+#cmakvafcpe thead, #cmakvafcpe tbody, #cmakvafcpe tfoot, #cmakvafcpe tr, #cmakvafcpe td, #cmakvafcpe th {
   border-style: none;
 }
 
-#vspzyecncx p {
+#cmakvafcpe p {
   margin: 0;
   padding: 0;
 }
 
-#vspzyecncx .gt_table {
+#cmakvafcpe .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1558,12 +1696,12 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_caption {
+#cmakvafcpe .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vspzyecncx .gt_title {
+#cmakvafcpe .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1575,7 +1713,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-width: 0;
 }
 
-#vspzyecncx .gt_subtitle {
+#cmakvafcpe .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1587,7 +1725,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-width: 0;
 }
 
-#vspzyecncx .gt_heading {
+#cmakvafcpe .gt_heading {
   background-color: #FFFFFF;
   text-align: left;
   border-bottom-color: #FFFFFF;
@@ -1599,13 +1737,13 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_bottom_border {
+#cmakvafcpe .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_col_headings {
+#cmakvafcpe .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1620,7 +1758,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_col_heading {
+#cmakvafcpe .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1640,7 +1778,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#vspzyecncx .gt_column_spanner_outer {
+#cmakvafcpe .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1652,15 +1790,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 4px;
 }
 
-#vspzyecncx .gt_column_spanner_outer:first-child {
+#cmakvafcpe .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vspzyecncx .gt_column_spanner_outer:last-child {
+#cmakvafcpe .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vspzyecncx .gt_column_spanner {
+#cmakvafcpe .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1672,11 +1810,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   width: 100%;
 }
 
-#vspzyecncx .gt_spanner_row {
+#cmakvafcpe .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vspzyecncx .gt_group_heading {
+#cmakvafcpe .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1702,7 +1840,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   text-align: left;
 }
 
-#vspzyecncx .gt_empty_group_heading {
+#cmakvafcpe .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1717,15 +1855,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: middle;
 }
 
-#vspzyecncx .gt_from_md > :first-child {
+#cmakvafcpe .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vspzyecncx .gt_from_md > :last-child {
+#cmakvafcpe .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vspzyecncx .gt_row {
+#cmakvafcpe .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1744,7 +1882,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#vspzyecncx .gt_stub {
+#cmakvafcpe .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1757,7 +1895,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#vspzyecncx .gt_stub_row_group {
+#cmakvafcpe .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1771,15 +1909,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: top;
 }
 
-#vspzyecncx .gt_row_group_first td {
+#cmakvafcpe .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vspzyecncx .gt_row_group_first th {
+#cmakvafcpe .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vspzyecncx .gt_summary_row {
+#cmakvafcpe .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1789,16 +1927,16 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#vspzyecncx .gt_first_summary_row {
+#cmakvafcpe .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_first_summary_row.thick {
+#cmakvafcpe .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vspzyecncx .gt_last_summary_row {
+#cmakvafcpe .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1808,7 +1946,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_grand_summary_row {
+#cmakvafcpe .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1818,7 +1956,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#vspzyecncx .gt_first_grand_summary_row {
+#cmakvafcpe .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1828,7 +1966,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_last_grand_summary_row_top {
+#cmakvafcpe .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1838,11 +1976,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_striped {
+#cmakvafcpe .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vspzyecncx .gt_table_body {
+#cmakvafcpe .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1851,7 +1989,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_footnotes {
+#cmakvafcpe .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1865,7 +2003,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_footnote {
+#cmakvafcpe .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1874,7 +2012,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#vspzyecncx .gt_sourcenotes {
+#cmakvafcpe .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1888,7 +2026,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#vspzyecncx .gt_sourcenote {
+#cmakvafcpe .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1896,72 +2034,72 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#vspzyecncx .gt_left {
+#cmakvafcpe .gt_left {
   text-align: left;
 }
 
-#vspzyecncx .gt_center {
+#cmakvafcpe .gt_center {
   text-align: center;
 }
 
-#vspzyecncx .gt_right {
+#cmakvafcpe .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vspzyecncx .gt_font_normal {
+#cmakvafcpe .gt_font_normal {
   font-weight: normal;
 }
 
-#vspzyecncx .gt_font_bold {
+#cmakvafcpe .gt_font_bold {
   font-weight: bold;
 }
 
-#vspzyecncx .gt_font_italic {
+#cmakvafcpe .gt_font_italic {
   font-style: italic;
 }
 
-#vspzyecncx .gt_super {
+#cmakvafcpe .gt_super {
   font-size: 65%;
 }
 
-#vspzyecncx .gt_footnote_marks {
+#cmakvafcpe .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vspzyecncx .gt_asterisk {
+#cmakvafcpe .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vspzyecncx .gt_indent_1 {
+#cmakvafcpe .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vspzyecncx .gt_indent_2 {
+#cmakvafcpe .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vspzyecncx .gt_indent_3 {
+#cmakvafcpe .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vspzyecncx .gt_indent_4 {
+#cmakvafcpe .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vspzyecncx .gt_indent_5 {
+#cmakvafcpe .gt_indent_5 {
   text-indent: 25px;
 }
 
-#vspzyecncx .katex-display {
+#cmakvafcpe .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#vspzyecncx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#cmakvafcpe div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2023,24 +2161,25 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
 
 </div>
 </div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_stats</span>(iris, <span class="st">"versicolor"</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ugnhbuurim" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ugnhbuurim table {
+<div id="fllwbxnkze" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fllwbxnkze table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ugnhbuurim thead, #ugnhbuurim tbody, #ugnhbuurim tfoot, #ugnhbuurim tr, #ugnhbuurim td, #ugnhbuurim th {
+#fllwbxnkze thead, #fllwbxnkze tbody, #fllwbxnkze tfoot, #fllwbxnkze tr, #fllwbxnkze td, #fllwbxnkze th {
   border-style: none;
 }
 
-#ugnhbuurim p {
+#fllwbxnkze p {
   margin: 0;
   padding: 0;
 }
 
-#ugnhbuurim .gt_table {
+#fllwbxnkze .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2066,12 +2205,12 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_caption {
+#fllwbxnkze .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ugnhbuurim .gt_title {
+#fllwbxnkze .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2083,7 +2222,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-width: 0;
 }
 
-#ugnhbuurim .gt_subtitle {
+#fllwbxnkze .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2095,7 +2234,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-width: 0;
 }
 
-#ugnhbuurim .gt_heading {
+#fllwbxnkze .gt_heading {
   background-color: #FFFFFF;
   text-align: left;
   border-bottom-color: #FFFFFF;
@@ -2107,13 +2246,13 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_bottom_border {
+#fllwbxnkze .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_col_headings {
+#fllwbxnkze .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2128,7 +2267,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_col_heading {
+#fllwbxnkze .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2148,7 +2287,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#ugnhbuurim .gt_column_spanner_outer {
+#fllwbxnkze .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2160,15 +2299,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 4px;
 }
 
-#ugnhbuurim .gt_column_spanner_outer:first-child {
+#fllwbxnkze .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ugnhbuurim .gt_column_spanner_outer:last-child {
+#fllwbxnkze .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ugnhbuurim .gt_column_spanner {
+#fllwbxnkze .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2180,11 +2319,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   width: 100%;
 }
 
-#ugnhbuurim .gt_spanner_row {
+#fllwbxnkze .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ugnhbuurim .gt_group_heading {
+#fllwbxnkze .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2210,7 +2349,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   text-align: left;
 }
 
-#ugnhbuurim .gt_empty_group_heading {
+#fllwbxnkze .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2225,15 +2364,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: middle;
 }
 
-#ugnhbuurim .gt_from_md > :first-child {
+#fllwbxnkze .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ugnhbuurim .gt_from_md > :last-child {
+#fllwbxnkze .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ugnhbuurim .gt_row {
+#fllwbxnkze .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2252,7 +2391,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#ugnhbuurim .gt_stub {
+#fllwbxnkze .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2265,7 +2404,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#ugnhbuurim .gt_stub_row_group {
+#fllwbxnkze .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2279,15 +2418,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: top;
 }
 
-#ugnhbuurim .gt_row_group_first td {
+#fllwbxnkze .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ugnhbuurim .gt_row_group_first th {
+#fllwbxnkze .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ugnhbuurim .gt_summary_row {
+#fllwbxnkze .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2297,16 +2436,16 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#ugnhbuurim .gt_first_summary_row {
+#fllwbxnkze .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_first_summary_row.thick {
+#fllwbxnkze .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ugnhbuurim .gt_last_summary_row {
+#fllwbxnkze .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2316,7 +2455,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_grand_summary_row {
+#fllwbxnkze .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2326,7 +2465,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#ugnhbuurim .gt_first_grand_summary_row {
+#fllwbxnkze .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2336,7 +2475,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_last_grand_summary_row_top {
+#fllwbxnkze .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2346,11 +2485,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_striped {
+#fllwbxnkze .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ugnhbuurim .gt_table_body {
+#fllwbxnkze .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2359,7 +2498,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_footnotes {
+#fllwbxnkze .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2373,7 +2512,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_footnote {
+#fllwbxnkze .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2382,7 +2521,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#ugnhbuurim .gt_sourcenotes {
+#fllwbxnkze .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2396,7 +2535,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ugnhbuurim .gt_sourcenote {
+#fllwbxnkze .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2404,72 +2543,72 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#ugnhbuurim .gt_left {
+#fllwbxnkze .gt_left {
   text-align: left;
 }
 
-#ugnhbuurim .gt_center {
+#fllwbxnkze .gt_center {
   text-align: center;
 }
 
-#ugnhbuurim .gt_right {
+#fllwbxnkze .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ugnhbuurim .gt_font_normal {
+#fllwbxnkze .gt_font_normal {
   font-weight: normal;
 }
 
-#ugnhbuurim .gt_font_bold {
+#fllwbxnkze .gt_font_bold {
   font-weight: bold;
 }
 
-#ugnhbuurim .gt_font_italic {
+#fllwbxnkze .gt_font_italic {
   font-style: italic;
 }
 
-#ugnhbuurim .gt_super {
+#fllwbxnkze .gt_super {
   font-size: 65%;
 }
 
-#ugnhbuurim .gt_footnote_marks {
+#fllwbxnkze .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ugnhbuurim .gt_asterisk {
+#fllwbxnkze .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ugnhbuurim .gt_indent_1 {
+#fllwbxnkze .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ugnhbuurim .gt_indent_2 {
+#fllwbxnkze .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ugnhbuurim .gt_indent_3 {
+#fllwbxnkze .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ugnhbuurim .gt_indent_4 {
+#fllwbxnkze .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ugnhbuurim .gt_indent_5 {
+#fllwbxnkze .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ugnhbuurim .katex-display {
+#fllwbxnkze .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ugnhbuurim div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fllwbxnkze div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2531,24 +2670,25 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
 
 </div>
 </div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_stats</span>(iris, <span class="st">"virginica"</span>)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="jbepcvfzpo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#jbepcvfzpo table {
+<div id="nsphihdtdb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nsphihdtdb table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#jbepcvfzpo thead, #jbepcvfzpo tbody, #jbepcvfzpo tfoot, #jbepcvfzpo tr, #jbepcvfzpo td, #jbepcvfzpo th {
+#nsphihdtdb thead, #nsphihdtdb tbody, #nsphihdtdb tfoot, #nsphihdtdb tr, #nsphihdtdb td, #nsphihdtdb th {
   border-style: none;
 }
 
-#jbepcvfzpo p {
+#nsphihdtdb p {
   margin: 0;
   padding: 0;
 }
 
-#jbepcvfzpo .gt_table {
+#nsphihdtdb .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2574,12 +2714,12 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_caption {
+#nsphihdtdb .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#jbepcvfzpo .gt_title {
+#nsphihdtdb .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2591,7 +2731,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-width: 0;
 }
 
-#jbepcvfzpo .gt_subtitle {
+#nsphihdtdb .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2603,7 +2743,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-width: 0;
 }
 
-#jbepcvfzpo .gt_heading {
+#nsphihdtdb .gt_heading {
   background-color: #FFFFFF;
   text-align: left;
   border-bottom-color: #FFFFFF;
@@ -2615,13 +2755,13 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_bottom_border {
+#nsphihdtdb .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_col_headings {
+#nsphihdtdb .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2636,7 +2776,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_col_heading {
+#nsphihdtdb .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2656,7 +2796,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#jbepcvfzpo .gt_column_spanner_outer {
+#nsphihdtdb .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2668,15 +2808,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 4px;
 }
 
-#jbepcvfzpo .gt_column_spanner_outer:first-child {
+#nsphihdtdb .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#jbepcvfzpo .gt_column_spanner_outer:last-child {
+#nsphihdtdb .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#jbepcvfzpo .gt_column_spanner {
+#nsphihdtdb .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2688,11 +2828,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   width: 100%;
 }
 
-#jbepcvfzpo .gt_spanner_row {
+#nsphihdtdb .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#jbepcvfzpo .gt_group_heading {
+#nsphihdtdb .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2718,7 +2858,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   text-align: left;
 }
 
-#jbepcvfzpo .gt_empty_group_heading {
+#nsphihdtdb .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2733,15 +2873,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: middle;
 }
 
-#jbepcvfzpo .gt_from_md > :first-child {
+#nsphihdtdb .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#jbepcvfzpo .gt_from_md > :last-child {
+#nsphihdtdb .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#jbepcvfzpo .gt_row {
+#nsphihdtdb .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2760,7 +2900,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   overflow-x: hidden;
 }
 
-#jbepcvfzpo .gt_stub {
+#nsphihdtdb .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2773,7 +2913,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#jbepcvfzpo .gt_stub_row_group {
+#nsphihdtdb .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2787,15 +2927,15 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   vertical-align: top;
 }
 
-#jbepcvfzpo .gt_row_group_first td {
+#nsphihdtdb .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#jbepcvfzpo .gt_row_group_first th {
+#nsphihdtdb .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#jbepcvfzpo .gt_summary_row {
+#nsphihdtdb .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2805,16 +2945,16 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#jbepcvfzpo .gt_first_summary_row {
+#nsphihdtdb .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_first_summary_row.thick {
+#nsphihdtdb .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#jbepcvfzpo .gt_last_summary_row {
+#nsphihdtdb .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2824,7 +2964,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_grand_summary_row {
+#nsphihdtdb .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2834,7 +2974,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#jbepcvfzpo .gt_first_grand_summary_row {
+#nsphihdtdb .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2844,7 +2984,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_last_grand_summary_row_top {
+#nsphihdtdb .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2854,11 +2994,11 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_striped {
+#nsphihdtdb .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#jbepcvfzpo .gt_table_body {
+#nsphihdtdb .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2867,7 +3007,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_footnotes {
+#nsphihdtdb .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2881,7 +3021,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_footnote {
+#nsphihdtdb .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2890,7 +3030,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#jbepcvfzpo .gt_sourcenotes {
+#nsphihdtdb .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2904,7 +3044,7 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jbepcvfzpo .gt_sourcenote {
+#nsphihdtdb .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2912,72 +3052,72 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
   padding-right: 5px;
 }
 
-#jbepcvfzpo .gt_left {
+#nsphihdtdb .gt_left {
   text-align: left;
 }
 
-#jbepcvfzpo .gt_center {
+#nsphihdtdb .gt_center {
   text-align: center;
 }
 
-#jbepcvfzpo .gt_right {
+#nsphihdtdb .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#jbepcvfzpo .gt_font_normal {
+#nsphihdtdb .gt_font_normal {
   font-weight: normal;
 }
 
-#jbepcvfzpo .gt_font_bold {
+#nsphihdtdb .gt_font_bold {
   font-weight: bold;
 }
 
-#jbepcvfzpo .gt_font_italic {
+#nsphihdtdb .gt_font_italic {
   font-style: italic;
 }
 
-#jbepcvfzpo .gt_super {
+#nsphihdtdb .gt_super {
   font-size: 65%;
 }
 
-#jbepcvfzpo .gt_footnote_marks {
+#nsphihdtdb .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#jbepcvfzpo .gt_asterisk {
+#nsphihdtdb .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#jbepcvfzpo .gt_indent_1 {
+#nsphihdtdb .gt_indent_1 {
   text-indent: 5px;
 }
 
-#jbepcvfzpo .gt_indent_2 {
+#nsphihdtdb .gt_indent_2 {
   text-indent: 10px;
 }
 
-#jbepcvfzpo .gt_indent_3 {
+#nsphihdtdb .gt_indent_3 {
   text-indent: 15px;
 }
 
-#jbepcvfzpo .gt_indent_4 {
+#nsphihdtdb .gt_indent_4 {
   text-indent: 20px;
 }
 
-#jbepcvfzpo .gt_indent_5 {
+#nsphihdtdb .gt_indent_5 {
   text-indent: 25px;
 }
 
-#jbepcvfzpo .katex-display {
+#nsphihdtdb .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#jbepcvfzpo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#nsphihdtdb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3053,8 +3193,6 @@ Species3       virginica 3.000 0.0000000 3.0 3.0</code></pre>
 <p><a href="https://www.jaysong.net/tutorial/R/gt.html">gt入門</a></p>
 <p><a href="https://qiita.com/uri/items/6d5f285280387dff0caa">雰囲気で理解するtidy evaluation(1): tidy evaluationの導入</a></p>
 
-
-<!-- -->
 
 </section>
 
@@ -3148,57 +3286,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
     clipboardModal.on('success', onCopySuccess);
-  }
-  const viewSource = window.document.getElementById('quarto-view-source') ||
-                     window.document.getElementById('quarto-code-tools-source');
-  if (viewSource) {
-    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-    viewSource.addEventListener("click", function(e) {
-      if (sourceUrl) {
-        // rstudio viewer pane
-        if (/\bcapabilities=\b/.test(window.location)) {
-          window.open(sourceUrl);
-        } else {
-          window.location.href = sourceUrl;
-        }
-      } else {
-        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-        modal.show();
-      }
-      return false;
-    });
-  }
-  function toggleCodeHandler(show) {
-    return function(e) {
-      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-      for (let i=0; i<detailsSrc.length; i++) {
-        const details = detailsSrc[i].parentElement;
-        if (show) {
-          details.open = true;
-        } else {
-          details.removeAttribute("open");
-        }
-      }
-      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-      const fromCls = show ? "hidden" : "unhidden";
-      const toCls = show ? "unhidden" : "hidden";
-      for (let i=0; i<cellCodeDivs.length; i++) {
-        const codeDiv = cellCodeDivs[i];
-        if (codeDiv.classList.contains(fromCls)) {
-          codeDiv.classList.remove(fromCls);
-          codeDiv.classList.add(toCls);
-        } 
-      }
-      return false;
-    }
-  }
-  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-  if (hideAllCode) {
-    hideAllCode.addEventListener("click", toggleCodeHandler(false));
-  }
-  const showAllCode = window.document.getElementById("quarto-show-all-code");
-  if (showAllCode) {
-    showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
@@ -3534,301 +3621,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">ソースコード</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb12" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "論文に載せる記述統計表を作る"</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "azumaya"</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2024/08/23"</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># date-modified: "today"</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">  - R</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">  - Analysis</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">  - Tips</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## はじめに</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>記述統計を出力する関数はたくさんあるけれど、どれも少しずつもの足りない。</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>既存のパッケージに敬意を払ったあと、公式の場で発表できるくらいの記述統計表を出力するための関数を作る。</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## 目標</span></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>今回はサンプルデータである<span class="in">`iris`</span>を使って、<span class="in">`Species`</span>ごとに4変数の基本統計量を出力する。</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris)</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>目標は、以下の表のように、グループごとの記述統計表を作ること。</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>論文の規定という体で大文字小文字の区別や桁数も再現してみたい（右側の相関行列は省略）。</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="al">![出典：Hoetker, G. 2006. Do modular products lead to modular organizations? *Strategic Management Journal* 27 (6): 501–518.](images/tab2.png)</span>{fig-align="center"}</span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## 既存のパッケージ</span></span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>基本統計量を出してくれる関数として、</span>
-<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>base::summary()</span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>summarytools::descr()</span>
-<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>psych::describeBy()</span>
-<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>を確認する。</span>
-<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a><span class="co"># パッケージの読み込み</span></span>
-<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, summarytools, psych, gt)</span>
-<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a><span class="fu">### base::summary()</span></span>
-<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>とりあえずの確認には便利だけど、標準偏差とサンプル数がない。</span>
-<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(iris)</span>
-<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="in">`filter()`</span>を使って<span class="in">`Species`</span>ごとに出力することはできる。</span>
-<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
-<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Species <span class="sc">==</span> <span class="st">"setosa"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
-<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a><span class="fu">### summarytools::descr()</span></span>
-<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>まずはそのままの<span class="in">`descr()`</span>。</span>
-<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
-<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>()</span>
-<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a><span class="in">`group_by()`</span>をかませて、不要な統計量を除くとすっきり、かなり見やすい！</span>
-<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>変数が多すぎないときはこれでも十分かもしれない。</span>
-<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
-<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Species) <span class="sc">%&gt;%</span></span>
-<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descr</span>(<span class="at">stats =</span> <span class="fu">c</span>(<span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"min"</span>, <span class="st">"max"</span>)) <span class="co"># 変数の指定はMeanでなくmean</span></span>
-<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>ただ、このままだと<span class="in">`gt()`</span>に渡せないのと、統計量と変数の行列を入れ替えるのが手間すぎるので断念。</span>
-<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a><span class="fu">### psych::describeBy()</span></span>
-<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a>まずはそのままの<span class="in">`describe()`</span>。変数が縦にくるタイプ。</span>
-<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
-<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>  psych<span class="sc">::</span><span class="fu">describe</span>()</span>
-<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a><span class="in">`describeBy()`</span>を使うことで、簡単にやりたいことに近づいた。</span>
-<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span> </span>
-<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a>  psych<span class="sc">::</span><span class="fu">describeBy</span>(iris<span class="sc">$</span>Species)</span>
-<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a>不要な列を削除して表を扱いやすくしてみる。</span>
-<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span> </span>
-<span id="cb12-127"><a href="#cb12-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">describeBy</span>(iris<span class="sc">$</span>Species, </span>
-<span id="cb12-128"><a href="#cb12-128" aria-hidden="true" tabindex="-1"></a>             <span class="at">mat =</span> <span class="cn">TRUE</span> <span class="co"># 行列形式で出力</span></span>
-<span id="cb12-129"><a href="#cb12-129" aria-hidden="true" tabindex="-1"></a>            ) </span>
-<span id="cb12-130"><a href="#cb12-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-131"><a href="#cb12-131" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> tab[, <span class="fu">names</span>(tab) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"group1"</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"min"</span>, <span class="st">"max"</span>)] </span>
-<span id="cb12-132"><a href="#cb12-132" aria-hidden="true" tabindex="-1"></a>tab</span>
-<span id="cb12-133"><a href="#cb12-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-134"><a href="#cb12-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-135"><a href="#cb12-135" aria-hidden="true" tabindex="-1"></a><span class="in">`Speceies`</span>の<span class="in">`setosa`</span>だけ取り出して、細部を再現してみようとするけど、<span class="in">`gt()`</span>に渡すと1列目が消えたり面倒になったのでここで撤退。</span>
-<span id="cb12-136"><a href="#cb12-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-139"><a href="#cb12-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-140"><a href="#cb12-140" aria-hidden="true" tabindex="-1"></a>tab <span class="sc">%&gt;%</span> </span>
-<span id="cb12-141"><a href="#cb12-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group1 <span class="sc">==</span> <span class="st">"setosa"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-142"><a href="#cb12-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Mean =</span> <span class="fu">round</span>(mean, <span class="dv">2</span>), </span>
-<span id="cb12-143"><a href="#cb12-143" aria-hidden="true" tabindex="-1"></a>         <span class="at">S.D. =</span> <span class="fu">round</span>(sd, <span class="dv">2</span>),</span>
-<span id="cb12-144"><a href="#cb12-144" aria-hidden="true" tabindex="-1"></a>         <span class="at">Min. =</span> <span class="fu">round</span>(min, <span class="dv">2</span>), <span class="co"># minとmaxは0があって2桁に見えない</span></span>
-<span id="cb12-145"><a href="#cb12-145" aria-hidden="true" tabindex="-1"></a>         <span class="at">Max. =</span> <span class="fu">round</span>(max, <span class="dv">2</span>)  <span class="co"># 解決法は後述</span></span>
-<span id="cb12-146"><a href="#cb12-146" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-147"><a href="#cb12-147" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Mean<span class="sc">:</span>Max.) <span class="sc">%&gt;%</span></span>
-<span id="cb12-148"><a href="#cb12-148" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-149"><a href="#cb12-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span>
-<span id="cb12-150"><a href="#cb12-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-151"><a href="#cb12-151" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-152"><a href="#cb12-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-153"><a href="#cb12-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-154"><a href="#cb12-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-155"><a href="#cb12-155" aria-hidden="true" tabindex="-1"></a><span class="fu">## 関数を自作する</span></span>
-<span id="cb12-156"><a href="#cb12-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-157"><a href="#cb12-157" aria-hidden="true" tabindex="-1"></a>論文の表を再現するために<span class="in">`tidyverse::summarise()`</span>と<span class="in">`gt()`</span>を使って関数を作ってみる。</span>
-<span id="cb12-158"><a href="#cb12-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-159"><a href="#cb12-159" aria-hidden="true" tabindex="-1"></a>まずは、<span class="in">`across()`</span>を使ってすべての変数の統計量を出す。</span>
-<span id="cb12-160"><a href="#cb12-160" aria-hidden="true" tabindex="-1"></a>このタイミングで、基本統計量の厳密な表記も指定しておく。</span>
-<span id="cb12-161"><a href="#cb12-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-164"><a href="#cb12-164" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-165"><a href="#cb12-165" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
-<span id="cb12-166"><a href="#cb12-166" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.numeric), <span class="co"># 数値型のすべての変数について</span></span>
-<span id="cb12-167"><a href="#cb12-167" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="co"># 今回は欠損値ないけど</span></span>
-<span id="cb12-168"><a href="#cb12-168" aria-hidden="true" tabindex="-1"></a>                               <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-169"><a href="#cb12-169" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-170"><a href="#cb12-170" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb12-171"><a href="#cb12-171" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>) <span class="co"># "列名-関数名"の形式で列名を作る</span></span>
-<span id="cb12-172"><a href="#cb12-172" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-173"><a href="#cb12-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="co"># 小数点以下2桁に</span></span>
-<span id="cb12-174"><a href="#cb12-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="co"># 0も表示させて見た目も2桁に</span></span>
-<span id="cb12-175"><a href="#cb12-175" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-176"><a href="#cb12-176" aria-hidden="true" tabindex="-1"></a><span class="in">`pivot_loner()`</span>で表に。</span>
-<span id="cb12-177"><a href="#cb12-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-180"><a href="#cb12-180" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-181"><a href="#cb12-181" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
-<span id="cb12-182"><a href="#cb12-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.numeric), </span>
-<span id="cb12-183"><a href="#cb12-183" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
-<span id="cb12-184"><a href="#cb12-184" aria-hidden="true" tabindex="-1"></a>                               <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-185"><a href="#cb12-185" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-186"><a href="#cb12-186" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb12-187"><a href="#cb12-187" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>) </span>
-<span id="cb12-188"><a href="#cb12-188" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-189"><a href="#cb12-189" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-190"><a href="#cb12-190" aria-hidden="true" tabindex="-1"></a>  <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-191"><a href="#cb12-191" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="co"># 全ての列を縦に</span></span>
-<span id="cb12-192"><a href="#cb12-192" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"variable"</span>, <span class="st">"stat"</span>), <span class="co"># variableとstatに分ける</span></span>
-<span id="cb12-193"><a href="#cb12-193" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"-"</span> <span class="co"># -でわける</span></span>
-<span id="cb12-194"><a href="#cb12-194" aria-hidden="true" tabindex="-1"></a>               ) </span>
-<span id="cb12-195"><a href="#cb12-195" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-196"><a href="#cb12-196" aria-hidden="true" tabindex="-1"></a><span class="in">`pivot_wider()`</span>で横に。</span>
-<span id="cb12-197"><a href="#cb12-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-200"><a href="#cb12-200" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-201"><a href="#cb12-201" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
-<span id="cb12-202"><a href="#cb12-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.numeric), </span>
-<span id="cb12-203"><a href="#cb12-203" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
-<span id="cb12-204"><a href="#cb12-204" aria-hidden="true" tabindex="-1"></a>                               <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-205"><a href="#cb12-205" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-206"><a href="#cb12-206" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb12-207"><a href="#cb12-207" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>) </span>
-<span id="cb12-208"><a href="#cb12-208" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-209"><a href="#cb12-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-210"><a href="#cb12-210" aria-hidden="true" tabindex="-1"></a>  <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-211"><a href="#cb12-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), </span>
-<span id="cb12-212"><a href="#cb12-212" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"variable"</span>, <span class="st">"stat"</span>), </span>
-<span id="cb12-213"><a href="#cb12-213" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"-"</span> </span>
-<span id="cb12-214"><a href="#cb12-214" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-215"><a href="#cb12-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stat, <span class="co"># statを列に</span></span>
-<span id="cb12-216"><a href="#cb12-216" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> value <span class="co"># valueの値に</span></span>
-<span id="cb12-217"><a href="#cb12-217" aria-hidden="true" tabindex="-1"></a>              ) </span>
-<span id="cb12-218"><a href="#cb12-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-219"><a href="#cb12-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-220"><a href="#cb12-220" aria-hidden="true" tabindex="-1"></a><span class="in">`gt()`</span>を使って見た目をより近づけていく。</span>
-<span id="cb12-221"><a href="#cb12-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-224"><a href="#cb12-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-225"><a href="#cb12-225" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
-<span id="cb12-226"><a href="#cb12-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">where</span>(is.numeric), </span>
-<span id="cb12-227"><a href="#cb12-227" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
-<span id="cb12-228"><a href="#cb12-228" aria-hidden="true" tabindex="-1"></a>                               <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-229"><a href="#cb12-229" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-230"><a href="#cb12-230" aria-hidden="true" tabindex="-1"></a>                               <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb12-231"><a href="#cb12-231" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>) </span>
-<span id="cb12-232"><a href="#cb12-232" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-233"><a href="#cb12-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-234"><a href="#cb12-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-235"><a href="#cb12-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), </span>
-<span id="cb12-236"><a href="#cb12-236" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"variable"</span>, <span class="st">"stat"</span>), </span>
-<span id="cb12-237"><a href="#cb12-237" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"-"</span> </span>
-<span id="cb12-238"><a href="#cb12-238" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-239"><a href="#cb12-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stat, </span>
-<span id="cb12-240"><a href="#cb12-240" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> value </span>
-<span id="cb12-241"><a href="#cb12-241" aria-hidden="true" tabindex="-1"></a>              ) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-242"><a href="#cb12-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="at">num =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>),.) <span class="sc">%&gt;%</span> <span class="co"># 変数番号をつける</span></span>
-<span id="cb12-243"><a href="#cb12-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb12-244"><a href="#cb12-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">num =</span> <span class="st">""</span>,</span>
-<span id="cb12-245"><a href="#cb12-245" aria-hidden="true" tabindex="-1"></a>             <span class="at">variable =</span> <span class="st">""</span>) <span class="sc">%&gt;%</span> <span class="co"># 列名を消す</span></span>
-<span id="cb12-246"><a href="#cb12-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"グループ名"</span>) <span class="sc">%&gt;%</span>  <span class="co"># タイトル</span></span>
-<span id="cb12-247"><a href="#cb12-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">heading.align =</span> <span class="st">"left"</span>) <span class="sc">%&gt;%</span>   <span class="co"># タイトルを左揃えに</span></span>
-<span id="cb12-248"><a href="#cb12-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_footnote</span>(<span class="at">footnote =</span> <span class="fu">paste</span>(<span class="st">"*"</span>,<span class="st">"サンプル数"</span>, <span class="st">"observations."</span>)) <span class="co"># 脚注</span></span>
-<span id="cb12-249"><a href="#cb12-249" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb12-250"><a href="#cb12-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-251"><a href="#cb12-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-252"><a href="#cb12-252" aria-hidden="true" tabindex="-1"></a>完成直前！グループごとに出力できるように微調整して関数にまとめる。</span>
-<span id="cb12-253"><a href="#cb12-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-254"><a href="#cb12-254" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
-<span id="cb12-255"><a href="#cb12-255" aria-hidden="true" tabindex="-1"></a><span class="in">`rlang`</span>パッケージの記法、絶賛勉強中です。ムズイ。</span>
-<span id="cb12-256"><a href="#cb12-256" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb12-257"><a href="#cb12-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-258"><a href="#cb12-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-261"><a href="#cb12-261" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-262"><a href="#cb12-262" aria-hidden="true" tabindex="-1"></a>summary_stats <span class="ot">&lt;-</span> <span class="cf">function</span>(df, g) { </span>
-<span id="cb12-263"><a href="#cb12-263" aria-hidden="true" tabindex="-1"></a>  <span class="co"># gをシンボルに変換</span></span>
-<span id="cb12-264"><a href="#cb12-264" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> rlang<span class="sc">::</span><span class="fu">enquo</span>(g)</span>
-<span id="cb12-265"><a href="#cb12-265" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb12-266"><a href="#cb12-266" aria-hidden="true" tabindex="-1"></a>  <span class="co"># グループごとのサンプル数を計算</span></span>
-<span id="cb12-267"><a href="#cb12-267" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb12-268"><a href="#cb12-268" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Species <span class="sc">==</span> <span class="sc">!!</span>g) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-269"><a href="#cb12-269" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>()</span>
-<span id="cb12-270"><a href="#cb12-270" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb12-271"><a href="#cb12-271" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
-<span id="cb12-272"><a href="#cb12-272" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Species <span class="sc">==</span> <span class="sc">!!</span>g) <span class="sc">%&gt;%</span> <span class="co">#</span></span>
-<span id="cb12-273"><a href="#cb12-273" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), </span>
-<span id="cb12-274"><a href="#cb12-274" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">list</span>(<span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-275"><a href="#cb12-275" aria-hidden="true" tabindex="-1"></a>                          <span class="at">S.D. =</span> <span class="sc">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-276"><a href="#cb12-276" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Min. =</span> <span class="sc">~</span> <span class="fu">min</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-277"><a href="#cb12-277" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Max. =</span> <span class="sc">~</span> <span class="fu">max</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb12-278"><a href="#cb12-278" aria-hidden="true" tabindex="-1"></a>                     <span class="at">.names =</span> <span class="st">"{col}-{fn}"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-279"><a href="#cb12-279" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-280"><a href="#cb12-280" aria-hidden="true" tabindex="-1"></a>    <span class="fu">format</span>(<span class="at">nsmall =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-281"><a href="#cb12-281" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), </span>
-<span id="cb12-282"><a href="#cb12-282" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"variable"</span>, <span class="st">"stat"</span>), </span>
-<span id="cb12-283"><a href="#cb12-283" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_sep =</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-284"><a href="#cb12-284" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stat, </span>
-<span id="cb12-285"><a href="#cb12-285" aria-hidden="true" tabindex="-1"></a>                <span class="at">values_from =</span> value) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-286"><a href="#cb12-286" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">num =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>),.) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-287"><a href="#cb12-287" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb12-288"><a href="#cb12-288" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cols_label</span>(<span class="at">num =</span> <span class="st">""</span>,</span>
-<span id="cb12-289"><a href="#cb12-289" aria-hidden="true" tabindex="-1"></a>               <span class="at">variable =</span> <span class="st">""</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-290"><a href="#cb12-290" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tab_header</span>(<span class="at">title =</span> rlang<span class="sc">::</span><span class="fu">as_name</span>(g)) <span class="sc">%&gt;%</span>  <span class="co"># タイトルにグループ名gを指定</span></span>
-<span id="cb12-291"><a href="#cb12-291" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tab_options</span>(<span class="at">heading.align =</span> <span class="st">"left"</span>) <span class="sc">%&gt;%</span>   </span>
-<span id="cb12-292"><a href="#cb12-292" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tab_footnote</span>(<span class="at">footnote =</span> <span class="fu">paste</span>(<span class="st">"*"</span>,n, <span class="st">"observations."</span>)) <span class="co"># サンプル数nをここで使う</span></span>
-<span id="cb12-293"><a href="#cb12-293" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-294"><a href="#cb12-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-295"><a href="#cb12-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-296"><a href="#cb12-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-299"><a href="#cb12-299" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-300"><a href="#cb12-300" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_stats</span>(iris, <span class="st">"setosa"</span>)</span>
-<span id="cb12-301"><a href="#cb12-301" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_stats</span>(iris, <span class="st">"versicolor"</span>)</span>
-<span id="cb12-302"><a href="#cb12-302" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_stats</span>(iris, <span class="st">"virginica"</span>)</span>
-<span id="cb12-303"><a href="#cb12-303" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-304"><a href="#cb12-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-305"><a href="#cb12-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-306"><a href="#cb12-306" aria-hidden="true" tabindex="-1"></a>できた～～～！</span>
-<span id="cb12-307"><a href="#cb12-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-308"><a href="#cb12-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-309"><a href="#cb12-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-310"><a href="#cb12-310" aria-hidden="true" tabindex="-1"></a><span class="fu">## おわりに</span></span>
-<span id="cb12-311"><a href="#cb12-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-312"><a href="#cb12-312" aria-hidden="true" tabindex="-1"></a>データフレームを.xlsx出力して、Excelで見た目整えた方が楽なのでは？って思いました（本末転倒）。</span>
-<span id="cb12-313"><a href="#cb12-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-314"><a href="#cb12-314" aria-hidden="true" tabindex="-1"></a><span class="in">`summarytools::descr()`</span>も<span class="in">`psych::describeBy()`</span>も全然使えるけど、やっぱりtidyverseがお気に入りかもしれない。</span>
-<span id="cb12-315"><a href="#cb12-315" aria-hidden="true" tabindex="-1"></a>R上でここまで再現できるんだという学びになりました。</span>
-<span id="cb12-316"><a href="#cb12-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-317"><a href="#cb12-317" aria-hidden="true" tabindex="-1"></a>今後は関数をより気軽に作るために非標準評価 (Non Standard Evaluation: NSE) を勉強していきたいです。</span>
-<span id="cb12-318"><a href="#cb12-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-319"><a href="#cb12-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-320"><a href="#cb12-320" aria-hidden="true" tabindex="-1"></a><span class="fu">## 参考</span></span>
-<span id="cb12-321"><a href="#cb12-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-322"><a href="#cb12-322" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">gt入門</span><span class="co">](https://www.jaysong.net/tutorial/R/gt.html)</span></span>
-<span id="cb12-323"><a href="#cb12-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-324"><a href="#cb12-324" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">雰囲気で理解するtidy evaluation(1): tidy evaluationの導入</span><span class="co">](https://qiita.com/uri/items/6d5f285280387dff0caa)</span></span>
-</code><button title="コピー" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
-</div></div></div></div></div>
+</script>
 </div> <!-- /content -->
 
 

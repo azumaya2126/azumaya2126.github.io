@@ -79,7 +79,7 @@ access_token <- get_spotify_access_token()
 
 ## 分析
 
-[星野源のアルバム楽曲をRで分析してみる](/posts/spotify02_gen_hoshino/index.html)
+Spotify APIを使った分析は[こちら](/posts.html#category=Spotify)
 
 
 
