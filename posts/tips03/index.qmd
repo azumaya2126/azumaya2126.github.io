@@ -93,14 +93,15 @@ reticulate::repl_python()
 ![](images/repl.png){width="700"}
 
 実行後、コンソールのカーソルが>>>になればOK。これでPythonが使える！
-
 書いてある通り、`exit`か`quit`を実行するとRに戻る。
+
+## やってみる
 
 試しに[こちら](https://utokyo-ipp.github.io/appendix/5-matplotlib.html)からコードをお借りして実行してみた。
 
-すごい、あまり知らない景色。
-
 ![](images/code.png){width="700"}
+
+すごい、あまり知らない景色。
 
 ## おわりに
 
