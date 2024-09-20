@@ -291,7 +291,7 @@
     "href": "posts/tips03/index.html#rのパッケージ",
     "title": "RstudioでPythonを使う",
     "section": "Rのパッケージ",
-    "text": "Rのパッケージ\nRでPythonと行き来するパッケージをインストールしておく。\n\npacman::p_load(reticulate)\n\n今後、RstudioをPython仕様にするにはこちらを実行。\n\nreticulate::repl_python()\n\nPython 3.12.6 (C:/Users/azuma/AppData/Local/Programs/Python/Python312/python.exe)\nReticulate 1.39.0 REPL -- A Python interpreter in R.\nEnter 'exit' or 'quit' to exit the REPL and return to R.\n\n\nexit\n\n\n\n実行後、コンソールのカーソルが&gt;&gt;&gt;になればOK。これでPythonが使える！\n書いてある通り、exitかquitを実行するとRに戻る。"
+    "text": "Rのパッケージ\nRでPythonと行き来するパッケージをインストールしておく。\n\npacman::p_load(reticulate)\n\n今後、RstudioをPython仕様にするにはこちらを実行。\n\nreticulate::repl_python()\n\nPython 3.12.6 (C:/Users/azuma/AppData/Local/Programs/Python/Python312/python.exe)\nReticulate 1.39.0 REPL -- A Python interpreter in R.\nEnter 'exit' or 'quit' to exit the REPL and return to R.\n\n\nexit\n\n\n\n実行後、コンソールのカーソルが&gt;&gt;&gt;になればOK。これでPythonが使える！\n書いてある通り、exitかquitを実行するとRに戻る。\n試しにこちらからコードをお借りして実行してみた。\nすごい、あまり知らない景色。"
   },
   {
     "objectID": "posts/tips03/index.html#おわりに",

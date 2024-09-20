@@ -4,7 +4,7 @@ author: "azumaya"
 date: "2024/09/20"
 # date-modified: "today"
 format: html
-# image: image.jpg
+image: images/code.png
 categories:
   - R
   - Python
@@ -95,6 +95,12 @@ reticulate::repl_python()
 実行後、コンソールのカーソルが>>>になればOK。これでPythonが使える！
 
 書いてある通り、`exit`か`quit`を実行するとRに戻る。
+
+試しに[こちら](https://utokyo-ipp.github.io/appendix/5-matplotlib.html)からコードをお借りして実行してみた。
+
+すごい、あまり知らない景色。
+
+![](images/code.png){width="700"}
 
 ## おわりに
 
