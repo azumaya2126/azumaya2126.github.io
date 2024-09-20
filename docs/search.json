@@ -270,7 +270,7 @@
     "href": "posts/tips03/index.html#コマンドプロンプトから",
     "title": "RstudioでPythonを使う",
     "section": "コマンドプロンプトから",
-    "text": "コマンドプロンプトから\npipのアップデートをする。\n\n\n\ncmd\n\npython.exe -m pip install --upgrade pip"
+    "text": "コマンドプロンプトから\npipのアップデートをする。\n\n\n\ncmd\n\npython -m pip install --upgrade pip"
   },
   {
     "objectID": "posts/tips03/index.html#ライブラリのインストール",
@@ -299,5 +299,12 @@
     "title": "RstudioでPythonを使う",
     "section": "おわりに",
     "text": "おわりに\nこのシンプルさにたどり着くまでほんとに長かった…。\nスクレイピングしたり、Kaggleにチャレンジしたりしたい、そのためにはPython使えないとなーと思っていたので、環境が整って嬉しい限り。\nただ、Anaconda/Minicondaを使わないデメリットがどこで発生するか、まだ分からないので使ってみてのお楽しみです。\ntidyverseとパイプ演算子に慣れ切った身でPythonと仲良くできるのか！？"
+  },
+  {
+    "objectID": "posts/tips03/index.html#参考",
+    "href": "posts/tips03/index.html#参考",
+    "title": "RstudioでPythonを使う",
+    "section": "参考",
+    "text": "参考\nRStudio で Python を使うための環境構築: Reticulate パッケージの導入\nPythonのセットアップ"
   }
 ]

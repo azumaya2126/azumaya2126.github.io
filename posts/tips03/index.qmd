@@ -47,7 +47,7 @@ pipのアップデートをする。
 
 ```{r eval = FALSE, error = FALSE, message = FALSE}
 #| filename: cmd
-python.exe -m pip install --upgrade pip
+python -m pip install --upgrade pip
 ```
 
 ## ライブラリのインストール
@@ -106,3 +106,8 @@ reticulate::repl_python()
 
 tidyverseとパイプ演算子に慣れ切った身でPythonと仲良くできるのか！？
 
+## 参考
+
+[RStudio で Python を使うための環境構築: Reticulate パッケージの導入](https://ushio-ecology-blog.blogspot.com/2022/02/20220207blogger0018.html)
+
+[Pythonのセットアップ](https://rpubs.com/tkdhss111/python_setup)
