@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="分析、勉強、練習など">
+<meta name="author" content="azumaya">
 
-<title>Posts – azumaya web</title>
+<title>RstudioでPythonを使う – azumaya web</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,27 +21,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,65 +101,8 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "サーチ"
   }
 }</script>
-<script>
+<style>html{ scroll-behavior: smooth; }</style>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -139,7 +114,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">azumaya web</span>
     </a>
   </div>
@@ -150,11 +125,11 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./posts.html" aria-current="page"> 
+    <a class="nav-link" href="../../posts.html"> 
 <span class="menu-text">Posts</span></a>
   </li>  
 </ul>
@@ -179,250 +154,180 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Posts</h1>
-                  <div>
-        <div class="description">
-          分析、勉強、練習など
-        </div>
-      </div>
-                </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">RstudioでPythonを使う</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">Python</div>
+                <div class="quarto-category">Tips</div>
+              </div>
+                  </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">作者</div>
+      <div class="quarto-title-meta-contents">
+               <p>azumaya </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">公開</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">2024年9月20日</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">分類</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">すべて <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Analysis">Analysis <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Music">Music <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Python">Python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Spotify">Spotify <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Tips">Tips <span class="quarto-category-count">(3)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#はじめに" id="toc-はじめに" class="nav-link active" data-scroll-target="#はじめに">はじめに</a></li>
+  <li><a href="#pythonをインストール" id="toc-pythonをインストール" class="nav-link" data-scroll-target="#pythonをインストール">Pythonをインストール</a></li>
+  <li><a href="#コマンドプロンプトから" id="toc-コマンドプロンプトから" class="nav-link" data-scroll-target="#コマンドプロンプトから">コマンドプロンプトから</a></li>
+  <li><a href="#ライブラリのインストール" id="toc-ライブラリのインストール" class="nav-link" data-scroll-target="#ライブラリのインストール">ライブラリのインストール</a></li>
+  <li><a href="#rstudioとpythonの紐づけ" id="toc-rstudioとpythonの紐づけ" class="nav-link" data-scroll-target="#rstudioとpythonの紐づけ">RstudioとPythonの紐づけ</a></li>
+  <li><a href="#rのパッケージ" id="toc-rのパッケージ" class="nav-link" data-scroll-target="#rのパッケージ">Rのパッケージ</a></li>
+  <li><a href="#おわりに" id="toc-おわりに" class="nav-link" data-scroll-target="#おわりに">おわりに</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p>RstudioでPythonを使いたい！ずっとできそうな気はしていたけど、やったことがなかったのでついに。</p>
+<p>Ananconda/Minicondaではなく、ライブラリはコマンドプロンプトからインストールするシンプルな方法です。</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+余談：試行錯誤の過程
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>これまでは、昔の講義で使ったGoogle Colabratory、.pyファイルを触りたくてVS Codeを自力で入れて使っていた。</p>
+<p>→Google Colabはやっぱり少し使いにくいのと、VS Codeはどうやって入れたかすら覚えていないのでさよなら。</p>
+<p>→RstudioでPythonを使うために、Minicondaを使って仮想環境を作って…みたいなことをしていたけど、講義で導入したJupyter Notebookの環境とごちゃごちゃして断念。</p>
+<p>→.ipynbを触るならJupyter Notebook、.pyを触るならRstudioで、ライブラリはコマンドプロンプトでインストールする方法に落ち着いた。</p>
+<p>（RはGoogle ColabかRstudioなのに、どうしてPythonはこんなに選択肢があるんだ…本当に難しかった。あとは授業ごとに使う環境が変わるの大変）</p>
+</div>
+</div>
+</div>
+</section>
+<section id="pythonをインストール" class="level2">
+<h2 class="anchored" data-anchor-id="pythonをインストール">Pythonをインストール</h2>
+<p><a href="https://www.python.org/">こちら</a>からPythonをダウンロードして、インストールに進む。</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+インストールのオプション
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Use admin privileges when installing py.exe：チェックを外す</li>
+<li>Add python.exe to PATH：チェックを入れる</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="コマンドプロンプトから" class="level2">
+<h2 class="anchored" data-anchor-id="コマンドプロンプトから">コマンドプロンプトから</h2>
+<p>pipのアップデートをする。</p>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>cmd</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>python.exe <span class="sc">-</span>m pip install <span class="sc">--</span>upgrade pip</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="ライブラリのインストール" class="level2">
+<h2 class="anchored" data-anchor-id="ライブラリのインストール">ライブラリのインストール</h2>
+<p>必要なライブラリはコマンドプロンプトからインストールする。例えば、pandasとmatplotlibをインストールする場合、つなげて書いてもOK。</p>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>cmd</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pip install pandas matplotlib </span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>インストールされたライブラリは以下で確認できる。</p>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>cmd</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pip list</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p><img src="images/list.png" class="img-fluid" width="400"></p>
+<p>Rでいうところの<code>install.packages()</code>みたいな感じなので、今後Python人生で使ったことないライブラリを使いたい場合は、コマンドプロンプトから<code>pip install xxx</code>を実行する必要がある。</p>
+</section>
+<section id="rstudioとpythonの紐づけ" class="level2">
+<h2 class="anchored" data-anchor-id="rstudioとpythonの紐づけ">RstudioとPythonの紐づけ</h2>
+<p>Rstudioにて、Tools &gt; Global Options… &gt; Python &gt; Select &gt; System から環境を選択して、Pythonと紐づける。</p>
+<p><img src="images/select.png" class="img-fluid" width="700"></p>
+</section>
+<section id="rのパッケージ" class="level2">
+<h2 class="anchored" data-anchor-id="rのパッケージ">Rのパッケージ</h2>
+<p>RでPythonと行き来するパッケージをインストールしておく。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(reticulate)</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>今後、RstudioをPython仕様にするにはこちらを実行。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">repl_python</span>()</span></code><button title="コピー" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Python 3.12.6 (C:/Users/azuma/AppData/Local/Programs/Python/Python312/python.exe)
+Reticulate 1.39.0 REPL -- A Python interpreter in R.
+Enter 'exit' or 'quit' to exit the REPL and return to R.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>exit</code></pre>
+</div>
+</div>
+<p><img src="images/repl.png" class="img-fluid" width="700"></p>
+<p>実行後、コンソールのカーソルが&gt;&gt;&gt;になればOK。これでPythonが使える！</p>
+<p>書いてある通り、<code>exit</code>か<code>quit</code>を実行するとRに戻る。</p>
+</section>
+<section id="おわりに" class="level2">
+<h2 class="anchored" data-anchor-id="おわりに">おわりに</h2>
+<p>このシンプルさにたどり着くまでほんとに長かった…。</p>
+<p>スクレイピングしたり、Kaggleにチャレンジしたりしたい、そのためにはPython使えないとなーと思っていたので、環境が整って嬉しい限り。</p>
+<p>ただ、Anaconda/Minicondaを使わないデメリットがどこで発生するか、まだ分からないので使ってみてのお楽しみです。</p>
+<p>tidyverseとパイプ演算子に慣れ切った身でPythonと仲良くできるのか！？</p>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="R,Python,Tips" data-listing-date-sort="1726758000000" data-listing-file-modified-sort="1726816743534" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="89">
-<div class="thumbnail">
-<p><a href="./posts/tips03/index.html" class="no-external"></a></p><a href="./posts/tips03/index.html" class="no-external">
-<p class="card-img-top"><img src="posts\tips03\images\list.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/tips03/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/tips03/index.html" class="no-external">RstudioでPythonを使う</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/tips03/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
-Python
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Tips'); return false;">
-Tips
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/tips03/index.html" class="no-external">RstudioでPythonを使いたい！ずっとできそうな気はしていたけど、やったことがなかったのでついに。</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/tips03/index.html" class="no-external">
-<div class="listing-date">
-2024/09/20
-</div>
-<div class="listing-author">
-azumaya
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="R,Analysis,Tips" data-listing-date-sort="1724425200000" data-listing-file-modified-sort="1724460178094" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="402">
-<div class="thumbnail">
-<p><a href="./posts/tips02/index.html" class="no-external"></a></p><a href="./posts/tips02/index.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/tips02/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/tips02/index.html" class="no-external">source関数で自作関数を呼び出す</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/tips02/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Analysis'); return false;">
-Analysis
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Tips'); return false;">
-Tips
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/tips02/index.html" class="no-external">自作関数をはじめ、他ファイルで定義したオブジェクトを簡単に呼び出したい。</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/tips02/index.html" class="no-external">
-<div class="listing-date">
-2024/08/24
-</div>
-<div class="listing-author">
-azumaya
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="R,Analysis,Tips" data-listing-date-sort="1724338800000" data-listing-file-modified-sort="1724435116326" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1653">
-<div class="thumbnail">
-<p><a href="./posts/tips01/index.html" class="no-external"></a></p><a href="./posts/tips01/index.html" class="no-external">
-<p class="card-img-top"><img src="posts\tips01\images\tab2.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/tips01/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/tips01/index.html" class="no-external">論文に載せる記述統計表を作る</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/tips01/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Analysis'); return false;">
-Analysis
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Tips'); return false;">
-Tips
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/tips01/index.html" class="no-external">記述統計を出力する関数はたくさんあるけれど、どれも少しずつもの足りない。</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/tips01/index.html" class="no-external">
-<div class="listing-date">
-2024/08/23
-</div>
-<div class="listing-author">
-azumaya
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="R,Analysis,Music,Spotify" data-listing-date-sort="1717340400000" data-listing-file-modified-sort="1724435022666" data-listing-date-modified-sort="1717426800000" data-listing-reading-time-sort="5" data-listing-word-count-sort="883">
-<div class="thumbnail">
-<p><a href="./posts/spotify02_gen_hoshino/index.html" class="no-external"></a></p><a href="./posts/spotify02_gen_hoshino/index.html" class="no-external">
-<p class="card-img-top"><img src="posts\spotify02_gen_hoshino\index_files\figure-html\unnamed-chunk-21-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/spotify02_gen_hoshino/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/spotify02_gen_hoshino/index.html" class="no-external">星野源のアルバム楽曲をRで分析してみる</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/spotify02_gen_hoshino/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Analysis'); return false;">
-Analysis
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Music'); return false;">
-Music
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Spotify'); return false;">
-Spotify
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/spotify02_gen_hoshino/index.html" class="no-external">RでSpotify分析やってみる初回。</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/spotify02_gen_hoshino/index.html" class="no-external">
-<div class="listing-date">
-2024/06/03
-</div>
-<div class="listing-author">
-azumaya
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="R,Analysis,Music,Spotify" data-listing-date-sort="1716649200000" data-listing-file-modified-sort="1724460578278" data-listing-date-modified-sort="1717340400000" data-listing-reading-time-sort="1" data-listing-word-count-sort="52">
-<div class="thumbnail">
-<p><a href="./posts/spotify01/index.html" class="no-external"></a></p><a href="./posts/spotify01/index.html" class="no-external">
-<p class="card-img-top"><img src="posts\spotify01\images\cliant.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/spotify01/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/spotify01/index.html" class="no-external">RでSpotifyの分析</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/spotify01/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Analysis'); return false;">
-Analysis
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Music'); return false;">
-Music
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Spotify'); return false;">
-Spotify
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/spotify01/index.html" class="no-external">世の中にPythonを使ったSpotify分析はたくさんあるけど、Rでもやってみたい。</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/spotify01/index.html" class="no-external">
-<div class="listing-date">
-2024/05/26
-</div>
-<div class="listing-author">
-azumaya
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-一致なし
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -853,4 +758,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

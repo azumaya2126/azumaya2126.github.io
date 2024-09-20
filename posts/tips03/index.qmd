@@ -1,0 +1,108 @@
+---
+title: "RstudioでPythonを使う"
+author: "azumaya"
+date: "2024/09/20"
+# date-modified: "today"
+format: html
+# image: image.jpg
+categories:
+  - R
+  - Python
+  - Tips
+---
+
+## はじめに
+
+RstudioでPythonを使いたい！ずっとできそうな気はしていたけど、やったことがなかったのでついに。
+
+Ananconda/Minicondaではなく、ライブラリはコマンドプロンプトからインストールするシンプルな方法です。
+
+::: {.callout-note icon=false collapse=true}
+## 余談：試行錯誤の過程
+
+これまでは、昔の講義で使ったGoogle Colabratory、.pyファイルを触りたくてVS Codeを自力で入れて使っていた。
+
+→Google Colabはやっぱり少し使いにくいのと、VS Codeはどうやって入れたかすら覚えていないのでさよなら。
+
+→RstudioでPythonを使うために、Minicondaを使って仮想環境を作って…みたいなことをしていたけど、講義で導入したJupyter Notebookの環境とごちゃごちゃして断念。
+
+→.ipynbを触るならJupyter Notebook、.pyを触るならRstudioで、ライブラリはコマンドプロンプトでインストールする方法に落ち着いた。
+
+（RはGoogle ColabかRstudioなのに、どうしてPythonはこんなに選択肢があるんだ…本当に難しかった。あとは授業ごとに使う環境が変わるの大変）
+:::
+
+## Pythonをインストール
+
+[こちら](https://www.python.org/)からPythonをダウンロードして、インストールに進む。
+
+::: {.callout-caution icon=false}
+## インストールのオプション
+- Use admin privileges when installing py.exe：チェックを外す
+- Add python.exe to PATH：チェックを入れる
+:::
+
+## コマンドプロンプトから
+
+pipのアップデートをする。
+
+```{r eval = FALSE, error = FALSE, message = FALSE}
+#| filename: cmd
+python.exe -m pip install --upgrade pip
+```
+
+## ライブラリのインストール
+
+必要なライブラリはコマンドプロンプトからインストールする。例えば、pandasとmatplotlibをインストールする場合、つなげて書いてもOK。
+
+```{r eval = FALSE, error = FALSE, message = FALSE}
+#| filename: cmd
+pip install pandas matplotlib 
+```
+
+インストールされたライブラリは以下で確認できる。
+
+```{r eval = FALSE, error = FALSE, message = FALSE}
+#| filename: cmd
+pip list
+```
+![](images/list.png){width="400"}
+
+Rでいうところの`install.packages()`みたいな感じなので、今後Python人生で使ったことないライブラリを使いたい場合は、コマンドプロンプトから`pip install xxx`を実行する必要がある。
+
+
+## RstudioとPythonの紐づけ
+
+Rstudioにて、Tools > Global Options... > Python > Select > System から環境を選択して、Pythonと紐づける。
+
+![](images/select.png){width="700"}
+
+## Rのパッケージ
+
+RでPythonと行き来するパッケージをインストールしておく。
+
+```{r eval = FALSE}
+pacman::p_load(reticulate)
+```
+
+今後、RstudioをPython仕様にするにはこちらを実行。
+
+```{r}
+reticulate::repl_python()
+```
+
+![](images/repl.png){width="700"}
+
+実行後、コンソールのカーソルが>>>になればOK。これでPythonが使える！
+
+書いてある通り、`exit`か`quit`を実行するとRに戻る。
+
+## おわりに
+
+このシンプルさにたどり着くまでほんとに長かった…。
+
+スクレイピングしたり、Kaggleにチャレンジしたりしたい、そのためにはPython使えないとなーと思っていたので、環境が整って嬉しい限り。
+
+ただ、Anaconda/Minicondaを使わないデメリットがどこで発生するか、まだ分からないので使ってみてのお楽しみです。
+
+tidyverseとパイプ演算子に慣れ切った身でPythonと仲良くできるのか！？
+

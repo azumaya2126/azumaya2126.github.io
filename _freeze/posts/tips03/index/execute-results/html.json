@@ -1,0 +1,15 @@
+{
+  "hash": "f49a5f355af7ce6fce0629f2bd65e96b",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"RstudioでPythonを使う\"\nauthor: \"azumaya\"\ndate: \"2024/09/20\"\n# date-modified: \"today\"\nformat: html\n# image: image.jpg\ncategories:\n  - R\n  - Python\n  - Tips\n---\n\n\n\n## はじめに\n\nRstudioでPythonを使いたい！ずっとできそうな気はしていたけど、やったことがなかったのでついに。\n\nAnanconda/Minicondaではなく、ライブラリはコマンドプロンプトからインストールするシンプルな方法です。\n\n::: {.callout-note icon=false collapse=true}\n## 余談：試行錯誤の過程\n\nこれまでは、昔の講義で使ったGoogle Colabratory、.pyファイルを触りたくてVS Codeを自力で入れて使っていた。\n\n→Google Colabはやっぱり少し使いにくいのと、VS Codeはどうやって入れたかすら覚えていないのでさよなら。\n\n→RstudioでPythonを使うために、Minicondaを使って仮想環境を作って…みたいなことをしていたけど、講義で導入したJupyter Notebookの環境とごちゃごちゃして断念。\n\n→.ipynbを触るならJupyter Notebook、.pyを触るならRstudioで、ライブラリはコマンドプロンプトでインストールする方法に落ち着いた。\n\n（RはGoogle ColabかRstudioなのに、どうしてPythonはこんなに選択肢があるんだ…本当に難しかった。あとは授業ごとに使う環境が変わるの大変）\n:::\n\n## Pythonをインストール\n\n[こちら](https://www.python.org/)からPythonをダウンロードして、インストールに進む。\n\n::: {.callout-caution icon=false}\n## インストールのオプション\n- Use admin privileges when installing py.exe：チェックを外す\n- Add python.exe to PATH：チェックを入れる\n:::\n\n## コマンドプロンプトから\n\npipのアップデートをする。\n\n\n\n::: {.cell filename='cmd'}\n\n```{.r .cell-code}\npython.exe -m pip install --upgrade pip\n```\n:::\n\n\n\n## ライブラリのインストール\n\n必要なライブラリはコマンドプロンプトからインストールする。例えば、pandasとmatplotlibをインストールする場合、つなげて書いてもOK。\n\n\n\n::: {.cell filename='cmd'}\n\n```{.r .cell-code}\npip install pandas matplotlib \n```\n:::\n\n\n\nインストールされたライブラリは以下で確認できる。\n\n\n\n::: {.cell filename='cmd'}\n\n```{.r .cell-code}\npip list\n```\n:::\n\n\n![](images/list.png){width=\"400\"}\n\nRでいうところの`install.packages()`みたいな感じなので、今後Python人生で使ったことないライブラリを使いたい場合は、コマンドプロンプトから`pip install xxx`を実行する必要がある。\n\n\n## RstudioとPythonの紐づけ\n\nRstudioにて、Tools > Global Options... > Python > Select > System から環境を選択して、Pythonと紐づける。\n\n![](images/select.png){width=\"700\"}\n\n## Rのパッケージ\n\nRでPythonと行き来するパッケージをインストールしておく。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(reticulate)\n```\n:::\n\n\n\n今後、RstudioをPython仕様にするにはこちらを実行。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nreticulate::repl_python()\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nPython 3.12.6 (C:/Users/azuma/AppData/Local/Programs/Python/Python312/python.exe)\nReticulate 1.39.0 REPL -- A Python interpreter in R.\nEnter 'exit' or 'quit' to exit the REPL and return to R.\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stdout}\n\n```\nexit\n```\n\n\n:::\n:::\n\n\n\n![](images/repl.png){width=\"700\"}\n\n実行後、コンソールのカーソルが>>>になればOK。これでPythonが使える！\n\n書いてある通り、`exit`か`quit`を実行するとRに戻る。\n\n## おわりに\n\nこのシンプルさにたどり着くまでほんとに長かった…。\n\nスクレイピングしたり、Kaggleにチャレンジしたりしたい、そのためにはPython使えないとなーと思っていたので、環境が整って嬉しい限り。\n\nただ、Anaconda/Minicondaを使わないデメリットがどこで発生するか、まだ分からないので使ってみてのお楽しみです。\n\ntidyverseとパイプ演算子に慣れ切った身でPythonと仲良くできるのか！？\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
