@@ -137,28 +137,28 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "所属\n\n経営学部→経営学研究科M2\n専門：管理会計\n\nスキル\n\nR：4年目、日々精進\nQuarto：趣味\nPython：基礎のみ\nGitHub：まだまだこれから\nAdobe Illustrator：6年目、紙媒体が好き\nAdobe After Effects：まだまだこれから\n\nいつかKaggleに参加したいです。"
+    "text": "所属\n\n経営学部→経営学研究科M2\n\nスキル\n\nR：5年目、日々精進\nQuarto：趣味\nPython：ぼちぼち\nGitHub：まだまだこれから\nAdobe Illustrator：6年目、紙媒体が好き\nAdobe After Effects：まだまだこれから\n\nいつかKaggleに参加したいです。"
   },
   {
     "objectID": "about.html#about-me",
     "href": "about.html#about-me",
     "title": "About",
     "section": "",
-    "text": "所属\n\n経営学部→経営学研究科M2\n専門：管理会計\n\nスキル\n\nR：4年目、日々精進\nQuarto：趣味\nPython：基礎のみ\nGitHub：まだまだこれから\nAdobe Illustrator：6年目、紙媒体が好き\nAdobe After Effects：まだまだこれから\n\nいつかKaggleに参加したいです。"
+    "text": "所属\n\n経営学部→経営学研究科M2\n\nスキル\n\nR：5年目、日々精進\nQuarto：趣味\nPython：ぼちぼち\nGitHub：まだまだこれから\nAdobe Illustrator：6年目、紙媒体が好き\nAdobe After Effects：まだまだこれから\n\nいつかKaggleに参加したいです。"
   },
   {
     "objectID": "about.html#favorite",
     "href": "about.html#favorite",
     "title": "About",
     "section": "Favorite",
-    "text": "Favorite\n\n音楽\n\n\n\n\n本\nこれまでに読んだ本\n特にお気に入り\n\n橋爪大三郎 (1988)『はじめての構造主義』講談社現代新書.\nマックス・ウェーバー著, 中山元訳(2010)『プロテスタンティズムの倫理と資本主義の精神』日経BP.\nカルロ・マリア・チッポラ著, 徳橋曜訳 (2001)『経済史への招待: 歴史学と経済学のはざまへ』国文社.\n\n\n\n作品\n\n森見登美彦\n「少女☆歌劇レヴュースタァライト」シリーズ\n濱祐斗デザイン事務所"
+    "text": "Favorite\n\n音楽\n\n\n\n\n本\nこれまでに読んだ本\nお気に入り\n\n橋爪大三郎 (1988)『はじめての構造主義』講談社現代新書.\nマックス・ウェーバー著, 中山元訳(2010)『プロテスタンティズムの倫理と資本主義の精神』日経BP.\nカルロ・マリア・チッポラ著, 徳橋曜訳 (2001)『経済史への招待: 歴史学と経済学のはざまへ』国文社.\n\n\n\n作品\n\n森見登美彦\n「少女☆歌劇レヴュースタァライト」シリーズ\n濱祐斗デザイン事務所"
   },
   {
     "objectID": "about.html#memo",
     "href": "about.html#memo",
     "title": "About",
     "section": "Memo",
-    "text": "Memo\n今後分析したい、勉強したい、まとめたいあれこれ\n\n分析とか勉強とか\n\nSpotifyのデータであれこれ\n\n星野源POP VIRUS以降\n星野源とSAKEROCK\nキリンジ時代の泰之曲と高樹曲\n荒井時代のユーミン\nSpotifyにあるやまたつ曲\nキリンジとオフコースって似た成分ある気がする\n似た系統の海外アーティストの曲は何か違うところあるのか\nクラシックはどんな数値？ラヴェルとドビュッシー\n自分の趣味可視化\n\n歌詞のテキスト分析\n地図データ可視化\nポートフォリオ・ソートを実データで\nベイズ統計復習\n正規表現\n画像認識\nGIS\nSQL\n論文レプリケーション（Burgstahler and Dichev (1997), Sloan (1996)）\n\n\n\nR / Quarto Tips\n\n結局どの相関行列が見やすいのか\n効率的に表記ゆれを直したい\n論文に載せるための図表\nQuartoチャンクオプションまとめ\nQuartoを書きたいhtml/css初心者\n\n\n\nAdobe Illustrator\n\nバッチ処理\nアクションボタン\n文字組み"
+    "text": "Memo\n今後分析したい、勉強したい、まとめたいあれこれ\n\n分析とか勉強とか\n\nSpotifyのデータであれこれ\n歌詞のテキスト分析\n実データでポートフォリオ・ソート\n正規表現\n画像認識\nGIS\nSQL\n論文レプリケーション（Burgstahler and Dichev (1997), Sloan (1996)）\nQuartoでTikz\n\n\n\n\n\n\n\n\n\n\nR / Quarto Tips\n\n効率的に表記ゆれを直したい\nQuartoを書きたいhtml/css初心者\n変数の命名規則、そろそろ整理しよう\n\n\n\nAdobe Illustrator\n\nバッチ処理\nアクションボタン\n文字組み"
   },
   {
     "objectID": "posts/spotify01/index.html",

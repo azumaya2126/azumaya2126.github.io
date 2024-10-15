@@ -1,7 +1,7 @@
 ---
 title: "About"
 description: "興味、関心、趣味など"
-date-modified: "2024/08/23"
+date-modified: "2024/10/15"
 page-layout: full
 title-block-banner: true
 ---
@@ -11,13 +11,12 @@ title-block-banner: true
 所属
 
 - 経営学部→経営学研究科M2
-- 専門：管理会計
 
 スキル
 
-- R：4年目、日々精進
+- R：5年目、日々精進
 - Quarto：趣味
-- Python：基礎のみ
+- Python：ぼちぼち
 - GitHub：まだまだこれから
 - Adobe Illustrator：6年目、紙媒体が好き
 - Adobe After Effects：まだまだこれから
@@ -35,7 +34,7 @@ title-block-banner: true
 
 [これまでに読んだ本](https://bookmeter.com/users/466784)
 
-特にお気に入り
+お気に入り
 
 - 橋爪大三郎 (1988)[『はじめての構造主義』](https://bookclub.kodansha.co.jp/product?item=0000146360)講談社現代新書.
 - マックス・ウェーバー著, 中山元訳(2010)[『プロテスタンティズムの倫理と資本主義の精神』](https://bookplus.nikkei.com/atcl/catalog/10/P47910/)日経BP.
@@ -57,34 +56,29 @@ title-block-banner: true
 ### 分析とか勉強とか
 
 - Spotifyのデータであれこれ
-
-    - 星野源POP VIRUS以降
-    - 星野源とSAKEROCK
-    - キリンジ時代の泰之曲と高樹曲
-    - 荒井時代のユーミン
-    - Spotifyにあるやまたつ曲
-    - キリンジとオフコースって似た成分ある気がする
-    - 似た系統の海外アーティストの曲は何か違うところあるのか
-    - クラシックはどんな数値？ラヴェルとドビュッシー
-    - 自分の趣味可視化
-
 - 歌詞のテキスト分析
-- 地図データ可視化
-- ポートフォリオ・ソートを実データで
-- ベイズ統計復習
+- 実データでポートフォリオ・ソート
 - 正規表現
 - 画像認識
 - GIS
 - SQL
 - 論文レプリケーション（Burgstahler and Dichev (1997), Sloan (1996)）
+- QuartoでTikz
+
+
+<!-- - 星野源POP VIRUS以降 -->
+<!-- - 星野源とSAKEROCK -->
+<!-- - キリンジ時代の泰之曲と高樹曲 -->
+<!-- - 荒井時代のユーミン -->
+<!-- - キリンジとオフコースって似た成分ある気がする -->
+<!-- - クラシックはどんな数値？ラヴェルとドビュッシー -->
+<!-- - 自分の趣味可視化 -->
 
 ### R / Quarto Tips
 
-- 結局どの相関行列が見やすいのか
 - 効率的に表記ゆれを直したい
-- 論文に載せるための図表
-- Quartoチャンクオプションまとめ
 - Quartoを書きたいhtml/css初心者
+- 変数の命名規則、そろそろ整理しよう
 
 ### Adobe Illustrator
 
