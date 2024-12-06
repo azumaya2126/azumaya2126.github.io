@@ -1,0 +1,271 @@
+---
+title: "Rでセルフ「Spotifyまとめ2024」"
+author: "azumaya"
+date: "2024/12/06"
+# date-modified: "2024/06/03"
+format:
+  html:
+    code-fold: FALSE 
+    # code-summary: "Show the code"
+    fig.align: "center"
+    link-external-newwindow: true
+    tidy: true
+    highlight: "pygments"
+image: fig5.png
+categories:
+  - R
+  - Analysis
+  - Music
+  - Spotify
+---
+
+## はじめに
+
+年末になるとSpotifyが1年聴いた音楽のまとめを教えてくれる。割と楽しみにしているあれを自力でやってみよう。
+
+今回は2024年1月から11月の聴取歴を可視化し、ついでに今年の音楽思い出話をする。
+
+![](fig1.jpg){width="30%"}
+
+## データの取得
+
+### 申請
+
+Spotifyでは、お願いするとストリーミング履歴を提供してくれる。
+
+[Spotifyアカウントのプライバシーのページ](https://www.spotify.com/jp/account/privacy/)にアクセスして、**「お客様のデータのダウンロード」**から**「長期ストリーミング履歴」**の申請をする。
+
+
+![](fig2.png){width="40%"}
+
+
+::: {.callout-tip appearance="simple"}
+最大30日間かかるとのことだけど、私は寝て起きたら届いていた。
+:::
+
+### ダウンロード
+
+ダウンロードしたzipファイルを開くとこんな感じ。
+
+![](fig3.png){width="60%"}
+
+変数の説明用のpdfファイル、楽曲情報のjsonファイル、ビデオ情報（動画コンテンツ？中身見たけどよくわからず）のjsonファイルが入っている。
+
+::: {.callout-tip appearance="simple"}
+私はSpotifyの登録が2022年、本格的に使い始めたのは2023年なので、これくらいのデータサイズ。\
+もっと量が多いと、ダウンロードまでに時間がかかるのかも？
+:::
+
+### jsonってなんだ？
+
+jsonファイルをよく知らないので、とりあえず開いてみる。
+
+![](fig4.png){width="70%"}
+
+なるほど、構成要素はデータフレームと似ていて直感的。
+
+## データの読み込み
+
+今回使うパッケージはこちら。
+
+```{r}
+#| message: false
+pacman::p_load(tidyverse, 
+               jsonlite, # jsonファイルの読み込み 
+               lubridate, # タイムスタンプの処理
+               ggfittext # グラフにテキストを追加
+               )
+```
+
+`jsonlite`パッケージを使ってデータを読み込む。
+
+```{r}
+# データが分割されているのでそれぞれ読み込み
+data1 <- fromJSON("Spotify Extended Streaming History/Streaming_History_Audio_2022-2024_0.json")
+data2 <- fromJSON("Spotify Extended Streaming History/Streaming_History_Audio_2024_1.json")
+```
+
+いつものデータフレームの感じで読み込めている！
+
+```{r}
+head(data2)
+```
+
+## データの整形
+
+タイムスタンプ列`ts`はUTC（協定世界時）なので、日本時間に変換する。 今回は、`lubridate`パッケージを使う。
+
+```{r}
+# とりあえず使ってみる
+as_datetime("2024-09-03T07:50:02Z", tz = "Asia/Tokyo")
+```
+
+かしこい！日本時間に変換して、月・日付・時間に分解してみる。
+
+```{r}
+data2 %>% 
+  filter(ms_played >= 60000) %>%
+  mutate(ts = as_datetime(ts, tz = "Asia/Tokyo"), # JST勝手に消えててラッキー！
+         month = str_sub(ts, start = 6, end = 7), # 適当ですみません
+         date = str_sub(ts, start = 1, end = 10),
+         time = str_sub(ts, start = 12, end = 20)) %>% 
+  select(ts, month, date, time) %>% 
+  head()
+```
+
+これを踏まえて、いろいろ調整してデータを整形。
+
+```{r}
+data <- bind_rows(data1, data2) %>% 
+  filter(ms_played >= 60000, # 1分（=60000ミリ秒）以上聴いた曲のみ抽出
+         is.na(episode_name) # ポッドキャストは除外
+         ) %>%
+  mutate(ts = as_datetime(ts, tz = "Asia/Tokyo"), # JSTに変換
+         month = str_sub(ts, start = 6, end = 7),
+         date = str_sub(ts, start = 1, end = 10),
+         time = str_sub(ts, start = 12, end = 20)) %>% 
+  rename(artist = master_metadata_album_artist_name) %>% # 列名長いので変換
+  filter(date >= "2024-01-01", date < "2024-12-01") # 2024年1-11月だけ抽出
+```
+
+このコードをコピペして分析しちゃおう。
+
+## 可視化
+
+この時期はこのアーティストをよく聴いたな～という体感があるので、月ごとでよく聴いたアーティストを調べてみる。
+
+```{r}
+# 描画用データ
+data_plt <- data %>% 
+  # アーティストごとの月合計再生時間
+  group_by(month, artist) %>% 
+  summarise(ms_played_month_artist = sum(ms_played),
+            .groups = "drop") %>% 
+  
+  # 月合計再生時間
+  group_by(month) %>%
+  mutate(ms_played_month = sum(ms_played_month_artist)) %>%
+  ungroup() %>% 
+  arrange(desc(ms_played_month_artist)) %>% 
+  
+  # 単位をミリ秒から時間に変換
+  mutate(hour_played_month = ms_played_month / 3600000,
+         hour_played_month_artist = ms_played_month_artist / 3600000) %>%
+  
+  # 月ごとに
+  group_by(month) 
+```
+
+毎月の合計再生時間と、よく聴いたアーティストのトップ5を可視化してみる。
+
+```{r}
+#| fig.width: 10
+#| fig.height: 8
+data_plt %>%  
+  slice(1:5) %>% # 再生回数多い順に5行
+  ggplot() + 
+  geom_col(aes(x = month, y = hour_played_month)) +
+  geom_col(aes(x = month, y = hour_played_month_artist, 
+               fill = artist)
+           ,color = "white") +
+  labs(x = "月", y = "再生時間（時間）", fill = "") +
+  theme_minimal() +
+  theme(legend.position = "bottom") # theme_minimal()より後に持ってこないと適用されない
+```
+
+いろいろ聴いている。色分けしてもアーティストがよくわからないので、トップ3に絞ってテキストを追加する。
+
+```{r}
+#| fig.width: 12
+#| fig.height: 9
+data_plt %>% 
+  slice(1:3) %>% 
+  ggplot(aes(x = month, y = hour_played_month_artist, 
+             fill = artist,
+             label = artist)) + 
+  geom_col(color = "white") +
+  geom_bar_text(reflow = TRUE, position = "stack") + # 棒グラフにテキストを追加
+  labs(x = "月", y = "再生時間（時間）", fill = "") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+いい感じです。本当は再生回数が多い順に積み上げたかった。
+
+
+::: {.callout-note icon=false collapse=true}
+
+### 雑談
+
+**Lamp** \
+去年の夏にはまってから、しばらく聴いていた。とても柔らかくて、好きです。
+
+**吉田美奈子** \
+ずっと前にラジオで[扉の冬](https://open.spotify.com/intl-ja/track/0mRLWYEDx8Kf5xYt7UnFwC?si=459dba0094394c18)
+を聴いて惚れたけど、1月放送のNHK「おげんさんといっしょ」で
+[頬に夜の灯](https://open.spotify.com/intl-ja/track/4M245xPGlW3WNuijduErTj?si=099b3175ed3b46a8)
+と[恋は流星](https://open.spotify.com/intl-ja/track/2NGWAXh6sisNpVHIAAlME0?si=06095da215cc46de)が流れて、かっけ～～～～～！ってなってからずっと聴いてた。
+
+**sumika** \
+4月のライブが良すぎて良すぎて。roof sessionを経て間違いなく史上最高になっていた。[運命](https://open.spotify.com/intl-ja/track/3qyqpWcRKyundtraHd65hq?si=fad4a842121b4db8)が良い。
+
+**the band apart** \
+忘れたころに引っ張り出してアルバムをリピートしている。6月は、2006年発売の[3rdアルバム](https://open.spotify.com/intl-ja/album/2unU7MUhpbs2VP9EsxgQyy?si=b6iDlsnfQiG99W9pBLDqYw)全曲やりますツアーに行けて、感無量だった。
+
+**ME:I** \
+[Sugar Bomb](https://open.spotify.com/intl-ja/track/2n7RsaMrg4IrKeSmPlBNxF?si=811f57f1b7e64d3d)を永遠リピート。
+
+**Chilli Beans.** \
+突如はまって緑黄色社会との対バンに行った。キュートだった。
+
+**Norah Jones** \
+昔から好き。この時期は朝起きたらとりあえず[Sunrise](https://open.spotify.com/intl-ja/track/7zkLpY72g6lKQbiHDqri1S?si=ef8e3524814e4cfa)を流していた。
+
+**Judee Shill** \
+お気に入りの喫茶店で流れていたラジオ「SPITZ 草野マサムネのロック大陸漫遊記」でマサムネさんが紹介していて、これ父が好きそうだなーと思ったら親子ではまった。3枚しかアルバムないのに全部良い。Spotify上で今年一番聴いた曲は[Lopin' Along Thru the Cosmos](https://open.spotify.com/intl-ja/track/5qpWttDHZuzfoHuBIX5kRd?si=b181a3b533ea4ff1)だった。
+
+**スピッツ** \
+2月はツアー、8月はフェスなのでよく聴いてた。フェスで初めて生で聴いた[ハチミツ](https://open.spotify.com/intl-ja/track/70nggNK0Gg2IWSLinNl5LT?si=94b82af463c44762)が良すぎて過去曲をたくさん聴いてた。
+
+**クリープハイプ** \
+一番聴いた！
+8月のフェス「RISING SUN ROCK FESTIVAL」の大トリ、朝4時のステージがなんかよかったな…と引っかかっていて、特に印象に残った[火まつり](https://open.spotify.com/intl-ja/track/3IWztt3qxGNnfwjZFe58rB?si=9b1e9c4351dc48af)（ベースの人歌うの～！？）と[二十九、三十](https://open.spotify.com/intl-ja/track/1CGjCodg0z4CeYzyTY75lQ?si=2af444a0c6984e06)（最後に染みた）をきっかけにドはまり。この時期はとりあえず全曲聴いて、アルバム1枚ずつ回していく数週間だった。 \
+ちょうどそのステージで「今年中にアルバム出します」と情報を初出ししていて、ファンの人はうれしいだろうなぁと思っていたけど、私がファンになりました。新譜めでたい！ツアーも当選してすごく嬉しい。
+
+**おいしくるメロンパン** \
+ここ数年のツアーは欠かさず行っていて、毎回、今が一番いいなと思いながら聴いている。今回も最高だった。曲数が増えてきたので全曲プレイリストを作ってひたすら。
+
+**Starbuck** \
+友達に勧められたのを思い出して久しぶりにリピートしていた。いいマリンバ。
+
+**梅田サイファー** \
+友達（↑同一人物）に誘われたので最新アルバムを予習してライブハウスへ。初めての世界だったけど信じられないくらい楽しかった。ステージとフロアの様子がかなり脳裏に焼き付いていて、あの光景を思い出してはよかったなぁと噛みしめている。しばらく忘れたくない。自分がラップ好きになるとは。。
+
+**Kroi** \
+8月のフェス以降ちょいちょい聴いていたけど、最新曲の[Jewel](https://open.spotify.com/intl-ja/track/2rSEqTiael70xKZGecoej6?si=d7a6057b81454c3a)が意外な音で、再び聴いている。
+
+**藤井風** \
+[スタジアムライブ](https://open.spotify.com/intl-ja/album/0U55vgfligIVp8fFNSu2Xf?si=l9Vo6nA9TSyr_JTxGtFA3w)が良すぎて、元々好きだった[ガーデン](https://open.spotify.com/intl-ja/track/6LcX2E4Ha1SNi92bfSrFtM?si=69cae7347ea44998)がさらに好きになる。
+
+キリンジ/KIRINJI、星野源はいつでもよく聴いている。他にいろんなアーティストを聴きつつ、たびたび戻っている。
+:::
+
+
+<br/>
+
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1FoyQGyinuuvRu?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+## おわりに
+
+月ごとトップ3アーティストの17組のうち、6組は今年からちゃんと聴き始めたことになる。ずっと好きなアーティストがいつつ、新しい音楽にも出会えているのがわかって良かった。
+
+これだけ情報量の多いデータなので、いろいろなことができそうです。友達のも見てみたい。
+
+
+
+## 参考
+
+[Rでunix時間からJSTに変更する際はas_datetime()](https://dichika.hateblo.jp/entry/2019/10/07/141611)
+
+[Introduction to ‘ggfittext’](https://cran.r-project.org/web/packages/ggfittext/vignettes/introduction-to-ggfittext.html)

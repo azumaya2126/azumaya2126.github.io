@@ -10,7 +10,9 @@ format:
     toc: true
     toc_float: true
     smooth-scroll: true
+    css: styles.css
     lang: ja
     link-external-newwindow: true
     tidy: true
     highlight: "pygments"
+    fig.align: "center"

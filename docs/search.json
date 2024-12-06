@@ -1,61 +1,5 @@
 [
   {
-    "objectID": "posts.html",
-    "href": "posts.html",
-    "title": "Posts",
-    "section": "",
-    "text": "RstudioでPythonを使う\n\n\n\n\n\n\nR\n\n\nPython\n\n\nTips\n\n\n\n\n\n\n\n\n\n2024/09/20\n\n\nazumaya\n\n\n\n\n\n\n\n\n\n\n\n\nsource関数で自作関数を呼び出す\n\n\n\n\n\n\nR\n\n\nAnalysis\n\n\nTips\n\n\n\n\n\n\n\n\n\n2024/08/24\n\n\nazumaya\n\n\n\n\n\n\n\n\n\n\n\n\n論文に載せる記述統計表を作る\n\n\n\n\n\n\nR\n\n\nAnalysis\n\n\nTips\n\n\n\n\n\n\n\n\n\n2024/08/23\n\n\nazumaya\n\n\n\n\n\n\n\n\n\n\n\n\n星野源のアルバム楽曲をRで分析してみる\n\n\n\n\n\n\nR\n\n\nAnalysis\n\n\nMusic\n\n\nSpotify\n\n\n\n\n\n\n\n\n\n2024/06/03\n\n\nazumaya\n\n\n\n\n\n\n\n\n\n\n\n\nRでSpotifyの分析\n\n\n\n\n\n\nR\n\n\nAnalysis\n\n\nMusic\n\n\nSpotify\n\n\n\n\n\n\n\n\n\n2024/05/26\n\n\nazumaya\n\n\n\n\n\n\n一致なし"
-  },
-  {
-    "objectID": "posts/tips02/index.html",
-    "href": "posts/tips02/index.html",
-    "title": "source関数で自作関数を呼び出す",
-    "section": "",
-    "text": "自作関数をはじめ、他ファイルで定義したオブジェクトを簡単に呼び出したい。\nsource関数を使って、ファイルの壁を飛び越える。"
-  },
-  {
-    "objectID": "posts/tips02/index.html#はじめに",
-    "href": "posts/tips02/index.html#はじめに",
-    "title": "source関数で自作関数を呼び出す",
-    "section": "",
-    "text": "自作関数をはじめ、他ファイルで定義したオブジェクトを簡単に呼び出したい。\nsource関数を使って、ファイルの壁を飛び越える。"
-  },
-  {
-    "objectID": "posts/tips02/index.html#関数を自作した",
-    "href": "posts/tips02/index.html#関数を自作した",
-    "title": "source関数で自作関数を呼び出す",
-    "section": "関数を自作した",
-    "text": "関数を自作した\n前回、記述統計表を出力する関数summary_stats()を自作した。\n\nsummary_stats &lt;- function(df, g) { \n  # gをシンボルに変換\n  g &lt;- rlang::enquo(g)\n  \n  # グループごとのサンプル数を計算\n  n &lt;- df %&gt;% \n    filter(Species == !!g) %&gt;% \n    nrow()\n  \n  df %&gt;%\n    filter(Species == !!g) %&gt;% #\n    summarise(across(where(is.numeric), \n                     list(Mean = ~ mean(.x, na.rm = TRUE),\n                          S.D. = ~ sd(.x, na.rm = TRUE),\n                          Min. = ~ min(.x, na.rm = TRUE),\n                          Max. = ~ max(.x, na.rm = TRUE)),\n                     .names = \"{col}-{fn}\")) %&gt;% \n    round(2) %&gt;% \n    format(nsmall = 2) %&gt;% \n    pivot_longer(cols = everything(), \n                 names_to = c(\"variable\", \"stat\"), \n                 names_sep = \"-\") %&gt;% \n    pivot_wider(names_from = stat, \n                values_from = value) %&gt;% \n    cbind(num = c(1:4),.) %&gt;% \n    gt() %&gt;% \n    cols_label(num = \"\",\n               variable = \"\") %&gt;% \n    tab_header(title = rlang::as_name(g)) %&gt;%  # タイトルにグループ名gを指定\n    tab_options(heading.align = \"left\") %&gt;%   \n    tab_footnote(footnote = paste(\"*\",n, \"observations.\")) # サンプル数nをここで使う\n}"
-  },
-  {
-    "objectID": "posts/tips02/index.html#自作関数をいつでも使いたい",
-    "href": "posts/tips02/index.html#自作関数をいつでも使いたい",
-    "title": "source関数で自作関数を呼び出す",
-    "section": "自作関数をいつでも使いたい",
-    "text": "自作関数をいつでも使いたい\nなぜ呼び出したい？\n\n1. 一度作った関数を何度も使いたい\n頑張って関数を作ったはいいものの、これを毎回コピペするのは面倒。 これみなさんどうしているんでしょうか。\n自作関数を集めたRファイルを作っていつでも呼び出せるようにしておくと便利な気がしている。\n\n\n\n\n\n\n他にもグラフ描画だったり、相関行列のテンプレにも応用できそう。 グラフによく使うカラーパレットを指定しておいたり。（.scssの設定みたいだな）\n\n\n\n\n\n2. .qmdに長いコードを書きたくない\n雑多な分析を.Rで行い、その一部を取り出して.qmdのプレゼンテーションやドキュメントにまとめたい場面が多々ある。\nそんな時、.qmd上で長々と複雑なコードを書きたくないというのが正直なところ。 レンダリングに時間がかかるし、書き換え忘れのエラーが面倒だし、cacheオプションが使いこなせていない…。\n今回作ったような自作関数だけでなく、もはやオブジェクトのすべてを呼び出せた方がありがたい。"
-  },
-  {
-    "objectID": "posts/tips02/index.html#呼び出してみる",
-    "href": "posts/tips02/index.html#呼び出してみる",
-    "title": "source関数で自作関数を呼び出す",
-    "section": "呼び出してみる",
-    "text": "呼び出してみる\n自作関数含むオブジェクトは、source関数で呼び出せる。\n\nsource関数がないとき\nfunctions.Rに作った関数summary_stats()を使いたいとき、fuga.qmd上で直接定義していない場合はエラーとなる。\n\n\n\nfuga.qmd\n\nsummary_stats(df)\n\n\nError in summary_stats(df): could not find function \"summary_stats\"\n\n\n\n\nsource関数があるとき\nfuga.qmd上で、summary_stats()を定義したfunctions.Rを呼び出すことで関数を使えるようになる。\n\n\n\nfuga.qmd\n\nsource(\"./functions.R\")\n\n\nfunctions.Rを開いたときのEnvironmentペインが再現されるみたいなイメージと認識している。 そのため、関数以外にも変数やデータがそのまま使えるようになる。\n\n\n\n\n\n\nfunctions.Rのコードを全て実行するので、あまりにも重いと時間がかかるし、ここでエラーが出ると先に進めない。 上から下まで順番に実行されることを前提で、変数名の定義やコメントアウトを上手いことする必要がある。"
-  },
-  {
-    "objectID": "posts/tips02/index.html#ほかの発想",
-    "href": "posts/tips02/index.html#ほかの発想",
-    "title": "source関数で自作関数を呼び出す",
-    "section": "ほかの発想？",
-    "text": "ほかの発想？\nsource()では、.Rを上から下まで実行してオブジェクトを呼び出していたけど、functions.Rのオブジェクト自体を保存して、それを呼び出す方法もある。\nfunctions.R上で作ったsummary_stats()をsaveRDS()で保存しておく。 引数に変数名を入れて実行すると、summary_stats.objが作成される。\n\n\n\nfunctions.R\n\nsaveRDS(summary_stats)\n\n\nfuga.qmd上で使いたい場合は、readRDS()で呼び出して変数に代入する。\n\n\n\nfuga.qmd\n\nsummary_stats &lt;- readRDS(\"./summary_stats.obj\")\n\n\n\n\n\n\n\n\nsource()と違って、.Rファイルの中身を実行するわけではないので、時間は短縮できる。 ただ、summary_stats()の定義を書き換えた場合、同時にsaveRDS()も実行しないとsummary_stats.objの中身が上書きされない。自作関数が増えていくと全然面倒かも。"
-  },
-  {
-    "objectID": "posts/tips02/index.html#おわりに",
-    "href": "posts/tips02/index.html#おわりに",
-    "title": "source関数で自作関数を呼び出す",
-    "section": "おわりに",
-    "text": "おわりに\nファイルをまたいで呼び出したい内容によって、いろいろな方法がありそう。\n雑多な分析の.Rと、きれいにまとめたい.qmdの行き来が永遠の課題だ～～～。\ncacheオプションを使いこなすしかないのか。"
-  },
-  {
     "objectID": "posts/spotify02_gen_hoshino/index.html",
     "href": "posts/spotify02_gen_hoshino/index.html",
     "title": "星野源のアルバム楽曲をRで分析してみる",
@@ -112,137 +56,60 @@
     "text": "追記\n相関係数行列の出力について、このサイトを教えていただきました。ありがとうございます。\n参考にしながら作ってみました。\n\n\nShow the code\n# デフォルトだと黒文字が見えないので、見えるくらいに5段階で色指定\ncol &lt;- colorRampPalette(c(\"#BB4444\", \"#EE9988\", \"#FFFFFF\", \"#77AADD\", \"#4477AA\"))\n\ngen %&gt;% \n  select_if(is.numeric) %&gt;%\n  cor() %&gt;%\n  corrplot(method = \"color\", # セルに色塗りで出力\n           addCoef.col = \"black\", # 係数の文字色\n           tl.col = \"black\", # 変数の文字色\n           col = col(200), # 指定した色を200分割グラデーション\n           type = \"upper\", # 行列の上側のみ表示\n           tl.srt = 45, # 変数名が長いので45度に傾ける\n           diag = FALSE # 同じ変数同士の相関(1)を隠す\n           )\n\n\n\n\n\n\n\n\n\nかなり見やすい！\nちなみに有意性の検定結果も組み込むことができるらしい。\n\n\nShow the code\n# 95%信頼区間でcor.mtest関数の定義（なぜデフォルトじゃないんだ）\ncor.mtest &lt;- function(mat, conf.level = 0.95) {\n    mat &lt;- as.matrix(mat)\n    n &lt;- ncol(mat)\n    p.mat &lt;- matrix(NA, n, n)\n    diag(p.mat) &lt;- 0\n    for (i in 1:(n - 1)) {\n        for (j in (i + 1):n) {\n            if (all(!is.na(mat[, i])) & all(!is.na(mat[, j]))) {\n                tmp &lt;- cor.test(mat[, i], mat[, j], conf.level = conf.level)\n                p.mat[i, j] &lt;- p.mat[j, i] &lt;- tmp$p.value\n            }\n        }\n    }\n    colnames(p.mat) &lt;- rownames(p.mat) &lt;- colnames(mat)\n    p.mat\n}\n\n# 相関行列を計算\ncor_matrix &lt;- gen %&gt;% \n  select_if(is.numeric) %&gt;%\n  cor()\n\n# p値を計算\np.mat &lt;- cor.mtest(cor_matrix)\n\ncorrplot(cor_matrix, \n         method = \"color\", \n         addCoef.col = \"black\",\n         tl.col = \"black\", \n         col = col(200), \n         type = \"upper\", \n         tl.srt = 45, \n         diag = FALSE,  \n         p.mat = p.mat,\n         sig.level = 0.05, # 閾値\n         insig = \"blank\" # 有意でないセルは空白に\n         )\n\n\n\n\n\n\n\n\n\nこれはこれでちょっと見にくい気もする。\nとにかく、色を調節して変数名を斜めに表示するひと手間を加えることでかなり見やすくなりました。よし！"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "azumaya web",
+    "objectID": "posts/spotify03_2024/index.html",
+    "href": "posts/spotify03_2024/index.html",
+    "title": "Rでセルフ「Spotifyまとめ2024」",
     "section": "",
-    "text": "興味、関心、趣味など"
+    "text": "年末になるとSpotifyが1年聴いた音楽のまとめを教えてくれる。割と楽しみにしているあれを自力でやってみよう。\n今回は2024年1月から11月の聴取歴を可視化し、ついでに今年の音楽思い出話をする。"
   },
   {
-    "objectID": "index.html#about",
-    "href": "index.html#about",
-    "title": "azumaya web",
+    "objectID": "posts/spotify03_2024/index.html#はじめに",
+    "href": "posts/spotify03_2024/index.html#はじめに",
+    "title": "Rでセルフ「Spotifyまとめ2024」",
     "section": "",
-    "text": "興味、関心、趣味など"
+    "text": "年末になるとSpotifyが1年聴いた音楽のまとめを教えてくれる。割と楽しみにしているあれを自力でやってみよう。\n今回は2024年1月から11月の聴取歴を可視化し、ついでに今年の音楽思い出話をする。"
   },
   {
-    "objectID": "index.html#posts",
-    "href": "index.html#posts",
-    "title": "azumaya web",
-    "section": "Posts",
-    "text": "Posts\n分析、勉強、練習など"
+    "objectID": "posts/spotify03_2024/index.html#データの取得",
+    "href": "posts/spotify03_2024/index.html#データの取得",
+    "title": "Rでセルフ「Spotifyまとめ2024」",
+    "section": "データの取得",
+    "text": "データの取得\n\n申請\nSpotifyでは、お願いするとストリーミング履歴を提供してくれる。\nSpotifyアカウントのプライバシーのページにアクセスして、「お客様のデータのダウンロード」から「長期ストリーミング履歴」の申請をする。\n\n\n\n\n\n\n\n最大30日間かかるとのことだけど、私は寝て起きたら届いていた。\n\n\n\n\n\nダウンロード\nダウンロードしたzipファイルを開くとこんな感じ。\n\n変数の説明用のpdfファイル、楽曲情報のjsonファイル、ビデオ情報（動画コンテンツ？中身見たけどよくわからず）のjsonファイルが入っている。\n\n\n\n\n\n\n私はSpotifyの登録が2022年、本格的に使い始めたのは2023年なので、これくらいのデータサイズ。\nもっと量が多いと、ダウンロードまでに時間がかかるのかも？\n\n\n\n\n\njsonってなんだ？\njsonファイルをよく知らないので、とりあえず開いてみる。\n\nなるほど、構成要素はデータフレームと似ていて直感的。"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "所属\n\n経営学部→経営学研究科M2\n\nスキル\n\nR：5年目、日々精進\nQuarto：趣味\nPython：ぼちぼち\nGitHub：まだまだこれから\nAdobe Illustrator：6年目、紙媒体が好き\nAdobe After Effects：まだまだこれから\n\nいつかKaggleに参加したいです。"
+    "objectID": "posts/spotify03_2024/index.html#データの読み込み",
+    "href": "posts/spotify03_2024/index.html#データの読み込み",
+    "title": "Rでセルフ「Spotifyまとめ2024」",
+    "section": "データの読み込み",
+    "text": "データの読み込み\n今回使うパッケージはこちら。\n\npacman::p_load(tidyverse, \n               jsonlite, # jsonファイルの読み込み \n               lubridate, # タイムスタンプの処理\n               ggfittext # グラフにテキストを追加\n               )\n\njsonliteパッケージを使ってデータを読み込む。\n\n# データが分割されているのでそれぞれ読み込み\ndata1 &lt;- fromJSON(\"Spotify Extended Streaming History/Streaming_History_Audio_2022-2024_0.json\")\ndata2 &lt;- fromJSON(\"Spotify Extended Streaming History/Streaming_History_Audio_2024_1.json\")\n\nいつものデータフレームの感じで読み込めている！\n\nhead(data2)\n\n                    ts platform ms_played conn_country         ip_addr\n1 2024-09-03T07:50:02Z      ios    194866           JP 123.223.202.114\n2 2024-09-03T07:53:24Z      ios    201040           JP 123.223.202.114\n3 2024-09-03T07:55:54Z      ios    150013           JP 123.223.202.114\n4 2024-09-03T07:59:01Z      ios    187680           JP 123.223.202.114\n5 2024-09-03T08:02:18Z      ios    196560           JP 123.223.202.114\n6 2024-09-03T08:05:48Z      ios    210693           JP 123.223.202.114\n         master_metadata_track_name master_metadata_album_artist_name\n1                    けだものだもの                         Creep Hyp\n2                  キャンバスライフ                         Creep Hyp\n3       テレビサイズ - TV Size 2'30                         Creep Hyp\n4 誰かが吐いた唾が キラキラ輝いてる                         Creep Hyp\n5                          愛の点滅                         Creep Hyp\n6                    リバーシブルー                         Creep Hyp\n  master_metadata_album_album_name                    spotify_track_uri\n1                           世界観 spotify:track:5J6bELLFVOTRuTcFv9ZZTm\n2                           世界観 spotify:track:4xHG2vYSNdqhCxVV6sGNKs\n3                           世界観 spotify:track:5artCEngkKKpKhcbr7Ia3s\n4                           世界観 spotify:track:5mbUBBzsJY2JsE4Qj2GI63\n5                           世界観 spotify:track:3BlYaUK1Aj8G75fiVUkgfl\n6                           世界観 spotify:track:66vlDAwwNitDMwARA8lejR\n  episode_name episode_show_name spotify_episode_uri reason_start reason_end\n1         &lt;NA&gt;              &lt;NA&gt;                &lt;NA&gt;    trackdone  trackdone\n2         &lt;NA&gt;              &lt;NA&gt;                &lt;NA&gt;    trackdone  trackdone\n3         &lt;NA&gt;              &lt;NA&gt;                &lt;NA&gt;    trackdone  trackdone\n4         &lt;NA&gt;              &lt;NA&gt;                &lt;NA&gt;    trackdone  trackdone\n5         &lt;NA&gt;              &lt;NA&gt;                &lt;NA&gt;    trackdone  trackdone\n6         &lt;NA&gt;              &lt;NA&gt;                &lt;NA&gt;    trackdone  trackdone\n  shuffle skipped offline offline_timestamp incognito_mode\n1   FALSE   FALSE   FALSE        1725349607          FALSE\n2   FALSE   FALSE   FALSE        1725349802          FALSE\n3   FALSE   FALSE   FALSE        1725350003          FALSE\n4   FALSE   FALSE   FALSE        1725350153          FALSE\n5   FALSE   FALSE   FALSE        1725350341          FALSE\n6   FALSE   FALSE   FALSE        1725350538          FALSE"
   },
   {
-    "objectID": "about.html#about-me",
-    "href": "about.html#about-me",
-    "title": "About",
-    "section": "",
-    "text": "所属\n\n経営学部→経営学研究科M2\n\nスキル\n\nR：5年目、日々精進\nQuarto：趣味\nPython：ぼちぼち\nGitHub：まだまだこれから\nAdobe Illustrator：6年目、紙媒体が好き\nAdobe After Effects：まだまだこれから\n\nいつかKaggleに参加したいです。"
+    "objectID": "posts/spotify03_2024/index.html#データの整形",
+    "href": "posts/spotify03_2024/index.html#データの整形",
+    "title": "Rでセルフ「Spotifyまとめ2024」",
+    "section": "データの整形",
+    "text": "データの整形\nタイムスタンプ列tsはUTC（協定世界時）なので、日本時間に変換する。 今回は、lubridateパッケージを使う。\n\n# とりあえず使ってみる\nas_datetime(\"2024-09-03T07:50:02Z\", tz = \"Asia/Tokyo\")\n\nDate in ISO8601 format; converting timezone from UTC to \"Asia/Tokyo\".\n\n\n[1] \"2024-09-03 16:50:02 JST\"\n\n\nかしこい！日本時間に変換して、月・日付・時間に分解してみる。\n\ndata2 %&gt;% \n  filter(ms_played &gt;= 60000) %&gt;%\n  mutate(ts = as_datetime(ts, tz = \"Asia/Tokyo\"), # JST勝手に消えててラッキー！\n         month = str_sub(ts, start = 6, end = 7), # 適当ですみません\n         date = str_sub(ts, start = 1, end = 10),\n         time = str_sub(ts, start = 12, end = 20)) %&gt;% \n  select(ts, month, date, time) %&gt;% \n  head()\n\nDate in ISO8601 format; converting timezone from UTC to \"Asia/Tokyo\".\n\n\n                   ts month       date     time\n1 2024-09-03 16:50:02    09 2024-09-03 16:50:02\n2 2024-09-03 16:53:24    09 2024-09-03 16:53:24\n3 2024-09-03 16:55:54    09 2024-09-03 16:55:54\n4 2024-09-03 16:59:01    09 2024-09-03 16:59:01\n5 2024-09-03 17:02:18    09 2024-09-03 17:02:18\n6 2024-09-03 17:05:48    09 2024-09-03 17:05:48\n\n\nこれを踏まえて、いろいろ調整してデータを整形。\n\ndata &lt;- bind_rows(data1, data2) %&gt;% \n  filter(ms_played &gt;= 60000, # 1分（=60000ミリ秒）以上聴いた曲のみ抽出\n         is.na(episode_name) # ポッドキャストは除外\n         ) %&gt;%\n  mutate(ts = as_datetime(ts, tz = \"Asia/Tokyo\"), # JSTに変換\n         month = str_sub(ts, start = 6, end = 7),\n         date = str_sub(ts, start = 1, end = 10),\n         time = str_sub(ts, start = 12, end = 20)) %&gt;% \n  rename(artist = master_metadata_album_artist_name) %&gt;% # 列名長いので変換\n  filter(date &gt;= \"2024-01-01\", date &lt; \"2024-12-01\") # 2024年1-11月だけ抽出\n\nDate in ISO8601 format; converting timezone from UTC to \"Asia/Tokyo\".\n\n\nこのコードをコピペして分析しちゃおう。"
   },
   {
-    "objectID": "about.html#favorite",
-    "href": "about.html#favorite",
-    "title": "About",
-    "section": "Favorite",
-    "text": "Favorite\n\n音楽\n\n\n\n\n本\nこれまでに読んだ本\nお気に入り\n\n橋爪大三郎 (1988)『はじめての構造主義』講談社現代新書.\nマックス・ウェーバー著, 中山元訳(2010)『プロテスタンティズムの倫理と資本主義の精神』日経BP.\nカルロ・マリア・チッポラ著, 徳橋曜訳 (2001)『経済史への招待: 歴史学と経済学のはざまへ』国文社.\n\n\n\n作品\n\n森見登美彦\n「少女☆歌劇レヴュースタァライト」シリーズ\n濱祐斗デザイン事務所"
+    "objectID": "posts/spotify03_2024/index.html#可視化",
+    "href": "posts/spotify03_2024/index.html#可視化",
+    "title": "Rでセルフ「Spotifyまとめ2024」",
+    "section": "可視化",
+    "text": "可視化\nこの時期はこのアーティストをよく聴いたな～という体感があるので、月ごとでよく聴いたアーティストを調べてみる。\n\n# 描画用データ\ndata_plt &lt;- data %&gt;% \n  # アーティストごとの月合計再生時間\n  group_by(month, artist) %&gt;% \n  summarise(ms_played_month_artist = sum(ms_played),\n            .groups = \"drop\") %&gt;% \n  \n  # 月合計再生時間\n  group_by(month) %&gt;%\n  mutate(ms_played_month = sum(ms_played_month_artist)) %&gt;%\n  ungroup() %&gt;% \n  arrange(desc(ms_played_month_artist)) %&gt;% \n  \n  # 単位をミリ秒から時間に変換\n  mutate(hour_played_month = ms_played_month / 3600000,\n         hour_played_month_artist = ms_played_month_artist / 3600000) %&gt;%\n  \n  # 月ごとに\n  group_by(month) \n\n毎月の合計再生時間と、よく聴いたアーティストのトップ5を可視化してみる。\n\ndata_plt %&gt;%  \n  slice(1:5) %&gt;% # 再生回数多い順に5行\n  ggplot() + \n  geom_col(aes(x = month, y = hour_played_month)) +\n  geom_col(aes(x = month, y = hour_played_month_artist, \n               fill = artist)\n           ,color = \"white\") +\n  labs(x = \"月\", y = \"再生時間（時間）\", fill = \"\") +\n  theme_minimal() +\n  theme(legend.position = \"bottom\") # theme_minimal()より後に持ってこないと適用されない\n\n\n\n\n\n\n\n\nいろいろ聴いている。色分けしてもアーティストがよくわからないので、トップ3に絞ってテキストを追加する。\n\ndata_plt %&gt;% \n  slice(1:3) %&gt;% \n  ggplot(aes(x = month, y = hour_played_month_artist, \n             fill = artist,\n             label = artist)) + \n  geom_col(color = \"white\") +\n  geom_bar_text(reflow = TRUE, position = \"stack\") + # 棒グラフにテキストを追加\n  labs(x = \"月\", y = \"再生時間（時間）\", fill = \"\") +\n  theme_minimal() +\n  theme(legend.position = \"bottom\")\n\n\n\n\n\n\n\n\nいい感じです。本当は再生回数が多い順に積み上げたかった。\n\n\n\n\n\n\n雑談\n\n\n\n\n\nLamp\n去年の夏にはまってから、しばらく聴いていた。とても柔らかくて、好きです。\n吉田美奈子\nずっと前にラジオで扉の冬 を聴いて惚れたけど、1月放送のNHK「おげんさんといっしょ」で 頬に夜の灯 と恋は流星が流れて、かっけ～～～～～！ってなってからずっと聴いてた。\nsumika\n4月のライブが良すぎて良すぎて。roof sessionを経て間違いなく史上最高になっていた。運命が良い。\nthe band apart\n忘れたころに引っ張り出してアルバムをリピートしている。6月は、2006年発売の3rdアルバム全曲やりますツアーに行けて、感無量だった。\nME:I\nSugar Bombを永遠リピート。\nChilli Beans.\n突如はまって緑黄色社会との対バンに行った。キュートだった。\nNorah Jones\n昔から好き。この時期は朝起きたらとりあえずSunriseを流していた。\nJudee Shill\nお気に入りの喫茶店で流れていたラジオ「SPITZ 草野マサムネのロック大陸漫遊記」でマサムネさんが紹介していて、これ父が好きそうだなーと思ったら親子ではまった。3枚しかアルバムないのに全部良い。Spotify上で今年一番聴いた曲はLopin’ Along Thru the Cosmosだった。\nスピッツ\n2月はツアー、8月はフェスなのでよく聴いてた。フェスで初めて生で聴いたハチミツが良すぎて過去曲をたくさん聴いてた。\nクリープハイプ\n一番聴いた！ 8月のフェス「RISING SUN ROCK FESTIVAL」の大トリ、朝4時のステージがなんかよかったな…と引っかかっていて、特に印象に残った火まつり（ベースの人歌うの～！？）と二十九、三十（最後に染みた）をきっかけにドはまり。この時期はとりあえず全曲聴いて、アルバム1枚ずつ回していく数週間だった。\nちょうどそのステージで「今年中にアルバム出します」と情報を初出ししていて、ファンの人はうれしいだろうなぁと思っていたけど、私がファンになりました。新譜めでたい！ツアーも当選してすごく嬉しい。\nおいしくるメロンパン\nここ数年のツアーは欠かさず行っていて、毎回、今が一番いいなと思いながら聴いている。今回も最高だった。曲数が増えてきたので全曲プレイリストを作ってひたすら。\nStarbuck\n友達に勧められたのを思い出して久しぶりにリピートしていた。いいマリンバ。\n梅田サイファー\n友達（↑同一人物）に誘われたので最新アルバムを予習してライブハウスへ。初めての世界だったけど信じられないくらい楽しかった。ステージとフロアの様子がかなり脳裏に焼き付いていて、あの光景を思い出してはよかったなぁと噛みしめている。しばらく忘れたくない。自分がラップ好きになるとは。。\nKroi\n8月のフェス以降ちょいちょい聴いていたけど、最新曲のJewelが意外な音で、再び聴いている。\n藤井風\nスタジアムライブが良すぎて、元々好きだったガーデンがさらに好きになる。\nキリンジ/KIRINJI、星野源はいつでもよく聴いている。他にいろんなアーティストを聴きつつ、たびたび戻っている。"
   },
   {
-    "objectID": "about.html#memo",
-    "href": "about.html#memo",
-    "title": "About",
-    "section": "Memo",
-    "text": "Memo\n今後分析したい、勉強したい、まとめたいあれこれ\n\n分析とか勉強とか\n\nSpotifyのデータであれこれ\n歌詞のテキスト分析\n実データでポートフォリオ・ソート\n正規表現\n画像認識\nGIS\nSQL\n論文レプリケーション（Burgstahler and Dichev (1997), Sloan (1996)）\nQuartoでTikz\n\n\n\n\n\n\n\n\n\n\nR / Quarto Tips\n\n効率的に表記ゆれを直したい\nQuartoを書きたいhtml/css初心者\n変数の命名規則、そろそろ整理しよう\n\n\n\nAdobe Illustrator\n\nバッチ処理\nアクションボタン\n文字組み"
-  },
-  {
-    "objectID": "posts/spotify01/index.html",
-    "href": "posts/spotify01/index.html",
-    "title": "RでSpotifyの分析",
-    "section": "",
-    "text": "世の中にPythonを使ったSpotify分析はたくさんあるけど、Rでもやってみたい。\nまずは、RでSpotifyの情報にアクセスできるようになり、これまでなんとなく感じていた音楽を数値的に見てみる準備をする。"
-  },
-  {
-    "objectID": "posts/spotify01/index.html#はじめに",
-    "href": "posts/spotify01/index.html#はじめに",
-    "title": "RでSpotifyの分析",
-    "section": "",
-    "text": "世の中にPythonを使ったSpotify分析はたくさんあるけど、Rでもやってみたい。\nまずは、RでSpotifyの情報にアクセスできるようになり、これまでなんとなく感じていた音楽を数値的に見てみる準備をする。"
-  },
-  {
-    "objectID": "posts/spotify01/index.html#spotifyの情報を使えるようにする",
-    "href": "posts/spotify01/index.html#spotifyの情報を使えるようにする",
-    "title": "RでSpotifyの分析",
-    "section": "Spotifyの情報を使えるようにする",
-    "text": "Spotifyの情報を使えるようにする\n\nパッケージのインストール\nRでSpotifyの情報を取得するパッケージspotifyrがある。 CRAN version 2.1.0であれば以下でインストールできるっぽい。\n\n# パッケージをインストールして読み込み\npacman::p_load(spotifyr)\n\n\n\n\n\n\n\n最近はpacmanパッケージのp_load()をよく使っています。install.packages()とlibrary()の合わせ技で、パッケージがインストールされていなかったらインストールを含め、読み込みまでやってくれる。\nR人生で一度だけpacmanをインストールしておけば、「このパッケージってインストールしてたかな」から解放されるし、パッケージ読み込みが1行で済むのは案外便利。\n他にも続けてライブラリを読み込みたい時は、pacman::p_load(spotifyr, tidyverse)のようにカンマでつなげる。\n\n\n\n\n\nAPI情報を取得\n\nSpotifyのアカウントでSpotify for Developersにログインする\nDashboardからCreate appでappを作る\n必要事項に入力してSave（Redirect URLsは何を入れたら分からなかったけど例に書いてあるURL入れたらOKだった。いいの？）\nDashboardからappを選択して、Settings &gt; Basic InformationからCliant IDとClient secret（隠されている）をコピーして、以下の通り実行\n\n\n\nSys.setenv(SPOTIFY_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxx')\nSys.setenv(SPOTIFY_CLIENT_SECRET = 'xxxxxxxxxxxxxxxxxxxxx')\n\naccess_token &lt;- get_spotify_access_token()\n\nこれでSpotifyの情報取り放題～\n\n\n\n\n\n\n大量のデータを取得しようとしたり、短時間に何度もget_spotify_access_token()を行うとAPI取得制限に引っ掛かることがあります。 具体的にどの程度の負荷をかけるとダメなのかは分かりませんが。時間を置いて再度試してみてください。"
-  },
-  {
-    "objectID": "posts/spotify01/index.html#分析",
-    "href": "posts/spotify01/index.html#分析",
-    "title": "RでSpotifyの分析",
-    "section": "分析",
-    "text": "分析\nSpotify APIを使った分析はこちら"
-  },
-  {
-    "objectID": "posts/spotify01/index.html#参考",
-    "href": "posts/spotify01/index.html#参考",
-    "title": "RでSpotifyの分析",
-    "section": "参考",
-    "text": "参考\nspotifyr\n【R】Spotify APIを利用して関連するアーティストをDigりまくる"
-  },
-  {
-    "objectID": "posts/tips01/index.html",
-    "href": "posts/tips01/index.html",
-    "title": "論文に載せる記述統計表を作る",
-    "section": "",
-    "text": "記述統計を出力する関数はたくさんあるけれど、どれも少しずつもの足りない。\n既存のパッケージに敬意を払ったあと、公式の場で発表できるくらいの記述統計表を出力するための関数を作る。"
-  },
-  {
-    "objectID": "posts/tips01/index.html#はじめに",
-    "href": "posts/tips01/index.html#はじめに",
-    "title": "論文に載せる記述統計表を作る",
-    "section": "",
-    "text": "記述統計を出力する関数はたくさんあるけれど、どれも少しずつもの足りない。\n既存のパッケージに敬意を払ったあと、公式の場で発表できるくらいの記述統計表を出力するための関数を作る。"
-  },
-  {
-    "objectID": "posts/tips01/index.html#目標",
-    "href": "posts/tips01/index.html#目標",
-    "title": "論文に載せる記述統計表を作る",
-    "section": "目標",
-    "text": "目標\n今回はサンプルデータであるirisを使って、Speciesごとに4変数の基本統計量を出力する。\n\nhead(iris)\n\n  Sepal.Length Sepal.Width Petal.Length Petal.Width Species\n1          5.1         3.5          1.4         0.2  setosa\n2          4.9         3.0          1.4         0.2  setosa\n3          4.7         3.2          1.3         0.2  setosa\n4          4.6         3.1          1.5         0.2  setosa\n5          5.0         3.6          1.4         0.2  setosa\n6          5.4         3.9          1.7         0.4  setosa\n\n\n目標は、以下の表のように、グループごとの記述統計表を作ること。 論文の規定という体で大文字小文字の区別や桁数も再現してみたい（右側の相関行列は省略）。\n\n\n\n出典：Hoetker, G. 2006. Do modular products lead to modular organizations? Strategic Management Journal 27 (6): 501–518."
-  },
-  {
-    "objectID": "posts/tips01/index.html#既存のパッケージ",
-    "href": "posts/tips01/index.html#既存のパッケージ",
-    "title": "論文に載せる記述統計表を作る",
-    "section": "既存のパッケージ",
-    "text": "既存のパッケージ\n基本統計量を出してくれる関数として、\n\nbase::summary()\nsummarytools::descr()\npsych::describeBy()\n\nを確認する。\n\n# パッケージの読み込み\npacman::p_load(tidyverse, summarytools, psych, gt)\n\n\nbase::summary()\nとりあえずの確認には便利だけど、標準偏差とサンプル数がない。\n\nsummary(iris)\n\n  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   \n Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  \n 1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  \n Median :5.800   Median :3.000   Median :4.350   Median :1.300  \n Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  \n 3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  \n Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  \n       Species  \n setosa    :50  \n versicolor:50  \n virginica :50  \n                \n                \n                \n\n\nfilter()を使ってSpeciesごとに出力することはできる。\n\niris %&gt;% \n  filter(Species == \"setosa\") %&gt;%\n  summary()\n\n  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   \n Min.   :4.300   Min.   :2.300   Min.   :1.000   Min.   :0.100  \n 1st Qu.:4.800   1st Qu.:3.200   1st Qu.:1.400   1st Qu.:0.200  \n Median :5.000   Median :3.400   Median :1.500   Median :0.200  \n Mean   :5.006   Mean   :3.428   Mean   :1.462   Mean   :0.246  \n 3rd Qu.:5.200   3rd Qu.:3.675   3rd Qu.:1.575   3rd Qu.:0.300  \n Max.   :5.800   Max.   :4.400   Max.   :1.900   Max.   :0.600  \n       Species  \n setosa    :50  \n versicolor: 0  \n virginica : 0  \n                \n                \n                \n\n\n\n\nsummarytools::descr()\nまずはそのままのdescr()。\n\niris %&gt;% \n  descr()\n\nNon-numerical variable(s) ignored: Species\n\n\nDescriptive Statistics  \niris  \nN: 150  \n\n                    Petal.Length   Petal.Width   Sepal.Length   Sepal.Width\n----------------- -------------- ------------- -------------- -------------\n             Mean           3.76          1.20           5.84          3.06\n          Std.Dev           1.77          0.76           0.83          0.44\n              Min           1.00          0.10           4.30          2.00\n               Q1           1.60          0.30           5.10          2.80\n           Median           4.35          1.30           5.80          3.00\n               Q3           5.10          1.80           6.40          3.30\n              Max           6.90          2.50           7.90          4.40\n              MAD           1.85          1.04           1.04          0.44\n              IQR           3.50          1.50           1.30          0.50\n               CV           0.47          0.64           0.14          0.14\n         Skewness          -0.27         -0.10           0.31          0.31\n      SE.Skewness           0.20          0.20           0.20          0.20\n         Kurtosis          -1.42         -1.36          -0.61          0.14\n          N.Valid         150.00        150.00         150.00        150.00\n        Pct.Valid         100.00        100.00         100.00        100.00\n\n\ngroup_by()をかませて、不要な統計量を除くとすっきり、かなり見やすい！ 変数が多すぎないときはこれでも十分かもしれない。\n\niris %&gt;% \n  group_by(Species) %&gt;%\n  descr(stats = c(\"mean\", \"sd\", \"min\", \"max\")) # 変数の指定はMeanでなくmean\n\nDescriptive Statistics  \niris  \nGroup: Species = setosa  \nN: 50  \n\n                Petal.Length   Petal.Width   Sepal.Length   Sepal.Width\n------------- -------------- ------------- -------------- -------------\n         Mean           1.46          0.25           5.01          3.43\n      Std.Dev           0.17          0.11           0.35          0.38\n          Min           1.00          0.10           4.30          2.30\n          Max           1.90          0.60           5.80          4.40\n\nGroup: Species = versicolor  \nN: 50  \n\n                Petal.Length   Petal.Width   Sepal.Length   Sepal.Width\n------------- -------------- ------------- -------------- -------------\n         Mean           4.26          1.33           5.94          2.77\n      Std.Dev           0.47          0.20           0.52          0.31\n          Min           3.00          1.00           4.90          2.00\n          Max           5.10          1.80           7.00          3.40\n\nGroup: Species = virginica  \nN: 50  \n\n                Petal.Length   Petal.Width   Sepal.Length   Sepal.Width\n------------- -------------- ------------- -------------- -------------\n         Mean           5.55          2.03           6.59          2.97\n      Std.Dev           0.55          0.27           0.64          0.32\n          Min           4.50          1.40           4.90          2.20\n          Max           6.90          2.50           7.90          3.80\n\n\nただ、このままだとgt()に渡せないのと、統計量と変数の行列を入れ替えるのが手間すぎるので断念。\n\n\npsych::describeBy()\nまずはそのままのdescribe()。変数が縦にくるタイプ。\n\niris %&gt;% \n  psych::describe()\n\n             vars   n mean   sd median trimmed  mad min max range  skew\nSepal.Length    1 150 5.84 0.83   5.80    5.81 1.04 4.3 7.9   3.6  0.31\nSepal.Width     2 150 3.06 0.44   3.00    3.04 0.44 2.0 4.4   2.4  0.31\nPetal.Length    3 150 3.76 1.77   4.35    3.76 1.85 1.0 6.9   5.9 -0.27\nPetal.Width     4 150 1.20 0.76   1.30    1.18 1.04 0.1 2.5   2.4 -0.10\nSpecies*        5 150 2.00 0.82   2.00    2.00 1.48 1.0 3.0   2.0  0.00\n             kurtosis   se\nSepal.Length    -0.61 0.07\nSepal.Width      0.14 0.04\nPetal.Length    -1.42 0.14\nPetal.Width     -1.36 0.06\nSpecies*        -1.52 0.07\n\n\ndescribeBy()を使うことで、簡単にやりたいことに近づいた。\n\niris %&gt;% \n  psych::describeBy(iris$Species)\n\n\n Descriptive statistics by group \ngroup: setosa\n             vars  n mean   sd median trimmed  mad min max range skew kurtosis\nSepal.Length    1 50 5.01 0.35    5.0    5.00 0.30 4.3 5.8   1.5 0.11    -0.45\nSepal.Width     2 50 3.43 0.38    3.4    3.42 0.37 2.3 4.4   2.1 0.04     0.60\nPetal.Length    3 50 1.46 0.17    1.5    1.46 0.15 1.0 1.9   0.9 0.10     0.65\nPetal.Width     4 50 0.25 0.11    0.2    0.24 0.00 0.1 0.6   0.5 1.18     1.26\nSpecies         5 50 1.00 0.00    1.0    1.00 0.00 1.0 1.0   0.0  NaN      NaN\n               se\nSepal.Length 0.05\nSepal.Width  0.05\nPetal.Length 0.02\nPetal.Width  0.01\nSpecies      0.00\n------------------------------------------------------------ \ngroup: versicolor\n             vars  n mean   sd median trimmed  mad min max range  skew kurtosis\nSepal.Length    1 50 5.94 0.52   5.90    5.94 0.52 4.9 7.0   2.1  0.10    -0.69\nSepal.Width     2 50 2.77 0.31   2.80    2.78 0.30 2.0 3.4   1.4 -0.34    -0.55\nPetal.Length    3 50 4.26 0.47   4.35    4.29 0.52 3.0 5.1   2.1 -0.57    -0.19\nPetal.Width     4 50 1.33 0.20   1.30    1.32 0.22 1.0 1.8   0.8 -0.03    -0.59\nSpecies         5 50 2.00 0.00   2.00    2.00 0.00 2.0 2.0   0.0   NaN      NaN\n               se\nSepal.Length 0.07\nSepal.Width  0.04\nPetal.Length 0.07\nPetal.Width  0.03\nSpecies      0.00\n------------------------------------------------------------ \ngroup: virginica\n             vars  n mean   sd median trimmed  mad min max range  skew kurtosis\nSepal.Length    1 50 6.59 0.64   6.50    6.57 0.59 4.9 7.9   3.0  0.11    -0.20\nSepal.Width     2 50 2.97 0.32   3.00    2.96 0.30 2.2 3.8   1.6  0.34     0.38\nPetal.Length    3 50 5.55 0.55   5.55    5.51 0.67 4.5 6.9   2.4  0.52    -0.37\nPetal.Width     4 50 2.03 0.27   2.00    2.03 0.30 1.4 2.5   1.1 -0.12    -0.75\nSpecies         5 50 3.00 0.00   3.00    3.00 0.00 3.0 3.0   0.0   NaN      NaN\n               se\nSepal.Length 0.09\nSepal.Width  0.05\nPetal.Length 0.08\nPetal.Width  0.04\nSpecies      0.00\n\n\n不要な列を削除して表を扱いやすくしてみる。\n\ntab &lt;- iris %&gt;% \n  describeBy(iris$Species, \n             mat = TRUE # 行列形式で出力\n            ) \n\ntab &lt;- tab[, names(tab) %in% c(\"group1\", \"mean\", \"sd\", \"min\", \"max\")] \ntab\n\n                  group1  mean        sd min max\nSepal.Length1     setosa 5.006 0.3524897 4.3 5.8\nSepal.Length2 versicolor 5.936 0.5161711 4.9 7.0\nSepal.Length3  virginica 6.588 0.6358796 4.9 7.9\nSepal.Width1      setosa 3.428 0.3790644 2.3 4.4\nSepal.Width2  versicolor 2.770 0.3137983 2.0 3.4\nSepal.Width3   virginica 2.974 0.3224966 2.2 3.8\nPetal.Length1     setosa 1.462 0.1736640 1.0 1.9\nPetal.Length2 versicolor 4.260 0.4699110 3.0 5.1\nPetal.Length3  virginica 5.552 0.5518947 4.5 6.9\nPetal.Width1      setosa 0.246 0.1053856 0.1 0.6\nPetal.Width2  versicolor 1.326 0.1977527 1.0 1.8\nPetal.Width3   virginica 2.026 0.2746501 1.4 2.5\nSpecies1          setosa 1.000 0.0000000 1.0 1.0\nSpecies2      versicolor 2.000 0.0000000 2.0 2.0\nSpecies3       virginica 3.000 0.0000000 3.0 3.0\n\n\nSpeceiesのsetosaだけ取り出して、細部を再現してみようとするけど、gt()に渡すと1列目が消えたり面倒になったのでここで撤退。\n\ntab %&gt;% \n  filter(group1 == \"setosa\") %&gt;% \n  mutate(Mean = round(mean, 2), \n         S.D. = round(sd, 2),\n         Min. = round(min, 2), # minとmaxは0があって2桁に見えない\n         Max. = round(max, 2)  # 解決法は後述\n         ) %&gt;% \n  select(Mean:Max.) %&gt;%\n  head(4) %&gt;% \n  gt()\n\n\n\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n5.01\n0.35\n4.3\n5.8\n\n\n3.43\n0.38\n2.3\n4.4\n\n\n1.46\n0.17\n1.0\n1.9\n\n\n0.25\n0.11\n0.1\n0.6"
-  },
-  {
-    "objectID": "posts/tips01/index.html#関数を自作する",
-    "href": "posts/tips01/index.html#関数を自作する",
-    "title": "論文に載せる記述統計表を作る",
-    "section": "関数を自作する",
-    "text": "関数を自作する\n論文の表を再現するためにtidyverse::summarise()とgt()を使って関数を作ってみる。\nまずは、across()を使ってすべての変数の統計量を出す。 このタイミングで、基本統計量の厳密な表記も指定しておく。\n\niris %&gt;%\n  summarise(across(.cols = where(is.numeric), # 数値型のすべての変数について\n                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), # 今回は欠損値ないけど\n                               S.D. = ~ sd(.x, na.rm = TRUE),\n                               Min. = ~ min(.x, na.rm = TRUE),\n                               Max. = ~ max(.x, na.rm = TRUE)),\n                   .names = \"{col}-{fn}\") # \"列名-関数名\"の形式で列名を作る\n              ) %&gt;% \n  round(2) %&gt;% # 小数点以下2桁に\n  format(nsmall = 2) # 0も表示させて見た目も2桁に\n\n  Sepal.Length-Mean Sepal.Length-S.D. Sepal.Length-Min. Sepal.Length-Max.\n1              5.84              0.83              4.30              7.90\n  Sepal.Width-Mean Sepal.Width-S.D. Sepal.Width-Min. Sepal.Width-Max.\n1             3.06             0.44             2.00             4.40\n  Petal.Length-Mean Petal.Length-S.D. Petal.Length-Min. Petal.Length-Max.\n1              3.76              1.77              1.00              6.90\n  Petal.Width-Mean Petal.Width-S.D. Petal.Width-Min. Petal.Width-Max.\n1             1.20             0.76             0.10             2.50\n\n\npivot_loner()で表に。\n\niris %&gt;%\n  summarise(across(.cols = where(is.numeric), \n                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), \n                               S.D. = ~ sd(.x, na.rm = TRUE),\n                               Min. = ~ min(.x, na.rm = TRUE),\n                               Max. = ~ max(.x, na.rm = TRUE)),\n                   .names = \"{col}-{fn}\") \n              ) %&gt;% \n  round(2) %&gt;% \n  format(nsmall = 2) %&gt;% \n  pivot_longer(cols = everything(), # 全ての列を縦に\n               names_to = c(\"variable\", \"stat\"), # variableとstatに分ける\n               names_sep = \"-\" # -でわける\n               ) \n\n# A tibble: 16 × 3\n   variable     stat  value   \n   &lt;chr&gt;        &lt;chr&gt; &lt;I&lt;chr&gt;&gt;\n 1 Sepal.Length Mean  5.84    \n 2 Sepal.Length S.D.  0.83    \n 3 Sepal.Length Min.  4.30    \n 4 Sepal.Length Max.  7.90    \n 5 Sepal.Width  Mean  3.06    \n 6 Sepal.Width  S.D.  0.44    \n 7 Sepal.Width  Min.  2.00    \n 8 Sepal.Width  Max.  4.40    \n 9 Petal.Length Mean  3.76    \n10 Petal.Length S.D.  1.77    \n11 Petal.Length Min.  1.00    \n12 Petal.Length Max.  6.90    \n13 Petal.Width  Mean  1.20    \n14 Petal.Width  S.D.  0.76    \n15 Petal.Width  Min.  0.10    \n16 Petal.Width  Max.  2.50    \n\n\npivot_wider()で横に。\n\niris %&gt;%\n  summarise(across(.cols = where(is.numeric), \n                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), \n                               S.D. = ~ sd(.x, na.rm = TRUE),\n                               Min. = ~ min(.x, na.rm = TRUE),\n                               Max. = ~ max(.x, na.rm = TRUE)),\n                   .names = \"{col}-{fn}\") \n              ) %&gt;% \n  round(2) %&gt;% \n  format(nsmall = 2) %&gt;% \n  pivot_longer(cols = everything(), \n               names_to = c(\"variable\", \"stat\"), \n               names_sep = \"-\" \n               ) %&gt;% \n  pivot_wider(names_from = stat, # statを列に\n              values_from = value # valueの値に\n              ) \n\n# A tibble: 4 × 5\n  variable     Mean     S.D.     Min.     Max.    \n  &lt;chr&gt;        &lt;I&lt;chr&gt;&gt; &lt;I&lt;chr&gt;&gt; &lt;I&lt;chr&gt;&gt; &lt;I&lt;chr&gt;&gt;\n1 Sepal.Length 5.84     0.83     4.30     7.90    \n2 Sepal.Width  3.06     0.44     2.00     4.40    \n3 Petal.Length 3.76     1.77     1.00     6.90    \n4 Petal.Width  1.20     0.76     0.10     2.50    \n\n\ngt()を使って見た目をより近づけていく。\n\niris %&gt;%\n  summarise(across(.cols = where(is.numeric), \n                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), \n                               S.D. = ~ sd(.x, na.rm = TRUE),\n                               Min. = ~ min(.x, na.rm = TRUE),\n                               Max. = ~ max(.x, na.rm = TRUE)),\n                   .names = \"{col}-{fn}\") \n              ) %&gt;% \n  round(2) %&gt;% \n  format(nsmall = 2) %&gt;% \n  pivot_longer(cols = everything(), \n               names_to = c(\"variable\", \"stat\"), \n               names_sep = \"-\" \n               ) %&gt;% \n  pivot_wider(names_from = stat, \n              values_from = value \n              ) %&gt;% \n  cbind(num = c(1:4),.) %&gt;% # 変数番号をつける\n  gt() %&gt;% \n  cols_label(num = \"\",\n             variable = \"\") %&gt;% # 列名を消す\n  tab_header(title = \"グループ名\") %&gt;%  # タイトル\n  tab_options(heading.align = \"left\") %&gt;%   # タイトルを左揃えに\n  tab_footnote(footnote = paste(\"*\",\"サンプル数\", \"observations.\")) # 脚注\n\n\n\n\n\n\n\nグループ名\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n1\nSepal.Length\n5.84\n0.83\n4.30\n7.90\n\n\n2\nSepal.Width\n3.06\n0.44\n2.00\n4.40\n\n\n3\nPetal.Length\n3.76\n1.77\n1.00\n6.90\n\n\n4\nPetal.Width\n1.20\n0.76\n0.10\n2.50\n\n\n\n* サンプル数 observations.\n\n\n\n\n\n\n\n\n完成直前！グループごとに出力できるように微調整して関数にまとめる。\n\n\n\n\n\n\nrlangパッケージの記法、絶賛勉強中です。ムズイ。\n\n\n\n\nsummary_stats &lt;- function(df, g) { \n  # gをシンボルに変換\n  g &lt;- rlang::enquo(g)\n  \n  # グループごとのサンプル数を計算\n  n &lt;- df %&gt;% \n    filter(Species == !!g) %&gt;% \n    nrow()\n  \n  df %&gt;%\n    filter(Species == !!g) %&gt;% #\n    summarise(across(where(is.numeric), \n                     list(Mean = ~ mean(.x, na.rm = TRUE),\n                          S.D. = ~ sd(.x, na.rm = TRUE),\n                          Min. = ~ min(.x, na.rm = TRUE),\n                          Max. = ~ max(.x, na.rm = TRUE)),\n                     .names = \"{col}-{fn}\")) %&gt;% \n    round(2) %&gt;% \n    format(nsmall = 2) %&gt;% \n    pivot_longer(cols = everything(), \n                 names_to = c(\"variable\", \"stat\"), \n                 names_sep = \"-\") %&gt;% \n    pivot_wider(names_from = stat, \n                values_from = value) %&gt;% \n    cbind(num = c(1:4),.) %&gt;% \n    gt() %&gt;% \n    cols_label(num = \"\",\n               variable = \"\") %&gt;% \n    tab_header(title = rlang::as_name(g)) %&gt;%  # タイトルにグループ名gを指定\n    tab_options(heading.align = \"left\") %&gt;%   \n    tab_footnote(footnote = paste(\"*\",n, \"observations.\")) # サンプル数nをここで使う\n}\n\n\nsummary_stats(iris, \"setosa\")\n\n\n\n\n\n\n\nsetosa\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n1\nSepal.Length\n5.01\n0.35\n4.30\n5.80\n\n\n2\nSepal.Width\n3.43\n0.38\n2.30\n4.40\n\n\n3\nPetal.Length\n1.46\n0.17\n1.00\n1.90\n\n\n4\nPetal.Width\n0.25\n0.11\n0.10\n0.60\n\n\n\n* 50 observations.\n\n\n\n\n\n\n\nsummary_stats(iris, \"versicolor\")\n\n\n\n\n\n\n\nversicolor\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n1\nSepal.Length\n5.94\n0.52\n4.90\n7.00\n\n\n2\nSepal.Width\n2.77\n0.31\n2.00\n3.40\n\n\n3\nPetal.Length\n4.26\n0.47\n3.00\n5.10\n\n\n4\nPetal.Width\n1.33\n0.20\n1.00\n1.80\n\n\n\n* 50 observations.\n\n\n\n\n\n\n\nsummary_stats(iris, \"virginica\")\n\n\n\n\n\n\n\nvirginica\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n1\nSepal.Length\n6.59\n0.64\n4.90\n7.90\n\n\n2\nSepal.Width\n2.97\n0.32\n2.20\n3.80\n\n\n3\nPetal.Length\n5.55\n0.55\n4.50\n6.90\n\n\n4\nPetal.Width\n2.03\n0.27\n1.40\n2.50\n\n\n\n* 50 observations.\n\n\n\n\n\n\n\n\nできた～～～！"
-  },
-  {
-    "objectID": "posts/tips01/index.html#おわりに",
-    "href": "posts/tips01/index.html#おわりに",
-    "title": "論文に載せる記述統計表を作る",
+    "objectID": "posts/spotify03_2024/index.html#おわりに",
+    "href": "posts/spotify03_2024/index.html#おわりに",
+    "title": "Rでセルフ「Spotifyまとめ2024」",
     "section": "おわりに",
-    "text": "おわりに\nデータフレームを.xlsx出力して、Excelで見た目整えた方が楽なのでは？って思いました（本末転倒）。\nsummarytools::descr()もpsych::describeBy()も全然使えるけど、やっぱりtidyverseがお気に入りかもしれない。 R上でここまで再現できるんだという学びになりました。\n今後は関数をより気軽に作るために非標準評価 (Non Standard Evaluation: NSE) を勉強していきたいです。"
+    "text": "おわりに\n月ごとトップ3アーティストの17組のうち、6組は今年からちゃんと聴き始めたことになる。ずっと好きなアーティストがいつつ、新しい音楽にも出会えているのがわかって良かった。\nこれだけ情報量の多いデータなので、いろいろなことができそうです。友達のも見てみたい。"
   },
   {
-    "objectID": "posts/tips01/index.html#参考",
-    "href": "posts/tips01/index.html#参考",
-    "title": "論文に載せる記述統計表を作る",
+    "objectID": "posts/spotify03_2024/index.html#参考",
+    "href": "posts/spotify03_2024/index.html#参考",
+    "title": "Rでセルフ「Spotifyまとめ2024」",
     "section": "参考",
-    "text": "参考\ngt入門\n雰囲気で理解するtidy evaluation(1): tidy evaluationの導入"
+    "text": "参考\nRでunix時間からJSTに変更する際はas_datetime()\nIntroduction to ‘ggfittext’"
   },
   {
     "objectID": "posts/tips03/index.html",
@@ -313,5 +180,215 @@
     "title": "RstudioでPythonを使う",
     "section": "参考",
     "text": "参考\nRStudio で Python を使うための環境構築: Reticulate パッケージの導入\nPythonのセットアップ"
+  },
+  {
+    "objectID": "terms.html",
+    "href": "terms.html",
+    "title": "Terms",
+    "section": "",
+    "text": "当サイトのリンクやバナーから移動したサイトで提供される情報やサービス等について一切の責任を負いません。\n当サイトのコンテンツや情報については、可能なかぎり正確な情報を提供するように努めておりますが、正確性や安全性を保証するものではありません。"
+  },
+  {
+    "objectID": "terms.html#著作権",
+    "href": "terms.html#著作権",
+    "title": "Terms",
+    "section": "著作権",
+    "text": "著作権\n当サイトのコンテンツは、断りがある場合を除き CC-BY-NC 4.0 で提供されています。"
+  },
+  {
+    "objectID": "terms.html#リンク",
+    "href": "terms.html#リンク",
+    "title": "Terms",
+    "section": "リンク",
+    "text": "リンク\n当サイトにリンクを行う場合の許可や連絡は不要です。"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "azumaya web",
+    "section": "",
+    "text": "興味、関心、趣味など"
+  },
+  {
+    "objectID": "index.html#about",
+    "href": "index.html#about",
+    "title": "azumaya web",
+    "section": "",
+    "text": "興味、関心、趣味など"
+  },
+  {
+    "objectID": "index.html#posts",
+    "href": "index.html#posts",
+    "title": "azumaya web",
+    "section": "Posts",
+    "text": "Posts\n分析、勉強、練習など"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "学生（経営学研究科）\n\nR：そろそろ5年目、趣味\nQuarto：趣味\nPython：ぼちぼち\nGitHub：まだまだこれから\nAdobe Illustrator：6年目、紙媒体が好き\nAdobe After Effects：3年くらい使ってた\n\nいつかKaggleに参加したい。"
+  },
+  {
+    "objectID": "about.html#about-me",
+    "href": "about.html#about-me",
+    "title": "About",
+    "section": "",
+    "text": "学生（経営学研究科）\n\nR：そろそろ5年目、趣味\nQuarto：趣味\nPython：ぼちぼち\nGitHub：まだまだこれから\nAdobe Illustrator：6年目、紙媒体が好き\nAdobe After Effects：3年くらい使ってた\n\nいつかKaggleに参加したい。"
+  },
+  {
+    "objectID": "about.html#memo",
+    "href": "about.html#memo",
+    "title": "About",
+    "section": "Memo",
+    "text": "Memo\n今後分析したい、勉強したい、まとめたいあれこれ\n\n分析とか勉強とか\n\nSpotifyのデータであれこれ\n歌詞のテキスト分析\n実データでポートフォリオ・ソート\n正規表現\n画像認識\nGIS\nSQL\n論文レプリケーション（Burgstahler and Dichev (1997), Sloan (1996)）\nQuartoでTikz\n統計検定準1級とりたい\n\n\n\n\n\n\n\n\n\nR / Quarto Tips\n\n効率的に表記ゆれを直したい\nQuartoを書きたいhtml/css初心者\n変数の命名規則、そろそろ整理しよう\n\n\n\nAdobe Illustrator\n\nバッチ処理\nアクションボタン\n文字組み"
+  },
+  {
+    "objectID": "about.html#favorite",
+    "href": "about.html#favorite",
+    "title": "About",
+    "section": "Favorite",
+    "text": "Favorite"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Posts",
+    "section": "",
+    "text": "Rでセルフ「Spotifyまとめ2024」\n\n\n\n\n\n\nR\n\n\nAnalysis\n\n\nMusic\n\n\nSpotify\n\n\n\n\n\n\n\n\n\n2024/12/06\n\n\nazumaya\n\n\n\n\n\n\n\n\n\n\n\n\nRstudioでPythonを使う\n\n\n\n\n\n\nR\n\n\nPython\n\n\nTips\n\n\n\n\n\n\n\n\n\n2024/09/20\n\n\nazumaya\n\n\n\n\n\n\n\n\n\n\n\n\nsource関数で自作関数を呼び出す\n\n\n\n\n\n\nR\n\n\nAnalysis\n\n\nTips\n\n\n\n\n\n\n\n\n\n2024/08/24\n\n\nazumaya\n\n\n\n\n\n\n\n\n\n\n\n\n論文に載せる記述統計表を作る\n\n\n\n\n\n\nR\n\n\nAnalysis\n\n\nTips\n\n\n\n\n\n\n\n\n\n2024/08/23\n\n\nazumaya\n\n\n\n\n\n\n\n\n\n\n\n\n星野源のアルバム楽曲をRで分析してみる\n\n\n\n\n\n\nR\n\n\nAnalysis\n\n\nMusic\n\n\nSpotify\n\n\n\n\n\n\n\n\n\n2024/06/03\n\n\nazumaya\n\n\n\n\n\n\n\n\n\n\n\n\nRでSpotifyの分析\n\n\n\n\n\n\nR\n\n\nAnalysis\n\n\nMusic\n\n\nSpotify\n\n\n\n\n\n\n\n\n\n2024/05/26\n\n\nazumaya\n\n\n\n\n\n\n一致なし"
+  },
+  {
+    "objectID": "posts/spotify01/index.html",
+    "href": "posts/spotify01/index.html",
+    "title": "RでSpotifyの分析",
+    "section": "",
+    "text": "世の中にPythonを使ったSpotify分析はたくさんあるけど、Rでもやってみたい。\nまずは、RでSpotifyの情報にアクセスできるようになり、これまでなんとなく感じていた音楽を数値的に見てみる準備をする。"
+  },
+  {
+    "objectID": "posts/spotify01/index.html#はじめに",
+    "href": "posts/spotify01/index.html#はじめに",
+    "title": "RでSpotifyの分析",
+    "section": "",
+    "text": "世の中にPythonを使ったSpotify分析はたくさんあるけど、Rでもやってみたい。\nまずは、RでSpotifyの情報にアクセスできるようになり、これまでなんとなく感じていた音楽を数値的に見てみる準備をする。"
+  },
+  {
+    "objectID": "posts/spotify01/index.html#spotifyの情報を使えるようにする",
+    "href": "posts/spotify01/index.html#spotifyの情報を使えるようにする",
+    "title": "RでSpotifyの分析",
+    "section": "Spotifyの情報を使えるようにする",
+    "text": "Spotifyの情報を使えるようにする\n\nパッケージのインストール\nRでSpotifyの情報を取得するパッケージspotifyrがある。 CRAN version 2.1.0であれば以下でインストールできるっぽい。\n\n# パッケージをインストールして読み込み\npacman::p_load(spotifyr)\n\n\n\n\n\n\n\n最近はpacmanパッケージのp_load()をよく使っています。install.packages()とlibrary()の合わせ技で、パッケージがインストールされていなかったらインストールを含め、読み込みまでやってくれる。\nR人生で一度だけpacmanをインストールしておけば、「このパッケージってインストールしてたかな」から解放されるし、パッケージ読み込みが1行で済むのは案外便利。\n他にも続けてライブラリを読み込みたい時は、pacman::p_load(spotifyr, tidyverse)のようにカンマでつなげる。\n\n\n\n\n\nAPI情報を取得\n\nSpotifyのアカウントでSpotify for Developersにログインする\nDashboardからCreate appでappを作る\n必要事項に入力してSave（Redirect URLsは何を入れたら分からなかったけど例に書いてあるURL入れたらOKだった。いいの？）\nDashboardからappを選択して、Settings &gt; Basic InformationからCliant IDとClient secret（隠されている）をコピーして、以下の通り実行\n\n\n\nSys.setenv(SPOTIFY_CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxx')\nSys.setenv(SPOTIFY_CLIENT_SECRET = 'xxxxxxxxxxxxxxxxxxxxx')\n\naccess_token &lt;- get_spotify_access_token()\n\nこれでSpotifyの情報取り放題～\n\n\n\n\n\n\n大量のデータを取得しようとしたり、短時間に何度もget_spotify_access_token()を行うとAPI取得制限に引っ掛かることがあります。 具体的にどの程度の負荷をかけるとダメなのかは分かりませんが。時間を置いて再度試してみてください。"
+  },
+  {
+    "objectID": "posts/spotify01/index.html#分析",
+    "href": "posts/spotify01/index.html#分析",
+    "title": "RでSpotifyの分析",
+    "section": "分析",
+    "text": "分析\nSpotify APIを使った分析はこちら"
+  },
+  {
+    "objectID": "posts/spotify01/index.html#参考",
+    "href": "posts/spotify01/index.html#参考",
+    "title": "RでSpotifyの分析",
+    "section": "参考",
+    "text": "参考\nspotifyr\n【R】Spotify APIを利用して関連するアーティストをDigりまくる"
+  },
+  {
+    "objectID": "posts/tips02/index.html",
+    "href": "posts/tips02/index.html",
+    "title": "source関数で自作関数を呼び出す",
+    "section": "",
+    "text": "自作関数をはじめ、他ファイルで定義したオブジェクトを簡単に呼び出したい。\nsource関数を使って、ファイルの壁を飛び越える。"
+  },
+  {
+    "objectID": "posts/tips02/index.html#はじめに",
+    "href": "posts/tips02/index.html#はじめに",
+    "title": "source関数で自作関数を呼び出す",
+    "section": "",
+    "text": "自作関数をはじめ、他ファイルで定義したオブジェクトを簡単に呼び出したい。\nsource関数を使って、ファイルの壁を飛び越える。"
+  },
+  {
+    "objectID": "posts/tips02/index.html#関数を自作した",
+    "href": "posts/tips02/index.html#関数を自作した",
+    "title": "source関数で自作関数を呼び出す",
+    "section": "関数を自作した",
+    "text": "関数を自作した\n前回、記述統計表を出力する関数summary_stats()を自作した。\n\nsummary_stats &lt;- function(df, g) { \n  # gをシンボルに変換\n  g &lt;- rlang::enquo(g)\n  \n  # グループごとのサンプル数を計算\n  n &lt;- df %&gt;% \n    filter(Species == !!g) %&gt;% \n    nrow()\n  \n  df %&gt;%\n    filter(Species == !!g) %&gt;% #\n    summarise(across(where(is.numeric), \n                     list(Mean = ~ mean(.x, na.rm = TRUE),\n                          S.D. = ~ sd(.x, na.rm = TRUE),\n                          Min. = ~ min(.x, na.rm = TRUE),\n                          Max. = ~ max(.x, na.rm = TRUE)),\n                     .names = \"{col}-{fn}\")) %&gt;% \n    round(2) %&gt;% \n    format(nsmall = 2) %&gt;% \n    pivot_longer(cols = everything(), \n                 names_to = c(\"variable\", \"stat\"), \n                 names_sep = \"-\") %&gt;% \n    pivot_wider(names_from = stat, \n                values_from = value) %&gt;% \n    cbind(num = c(1:4),.) %&gt;% \n    gt() %&gt;% \n    cols_label(num = \"\",\n               variable = \"\") %&gt;% \n    tab_header(title = rlang::as_name(g)) %&gt;%  # タイトルにグループ名gを指定\n    tab_options(heading.align = \"left\") %&gt;%   \n    tab_footnote(footnote = paste(\"*\",n, \"observations.\")) # サンプル数nをここで使う\n}"
+  },
+  {
+    "objectID": "posts/tips02/index.html#自作関数をいつでも使いたい",
+    "href": "posts/tips02/index.html#自作関数をいつでも使いたい",
+    "title": "source関数で自作関数を呼び出す",
+    "section": "自作関数をいつでも使いたい",
+    "text": "自作関数をいつでも使いたい\nなぜ呼び出したい？\n\n1. 一度作った関数を何度も使いたい\n頑張って関数を作ったはいいものの、これを毎回コピペするのは面倒。 これみなさんどうしているんでしょうか。\n自作関数を集めたRファイルを作っていつでも呼び出せるようにしておくと便利な気がしている。\n\n\n\n\n\n\n他にもグラフ描画だったり、相関行列のテンプレにも応用できそう。 グラフによく使うカラーパレットを指定しておいたり。（.scssの設定みたいだな）\n\n\n\n\n\n2. .qmdに長いコードを書きたくない\n雑多な分析を.Rで行い、その一部を取り出して.qmdのプレゼンテーションやドキュメントにまとめたい場面が多々ある。\nそんな時、.qmd上で長々と複雑なコードを書きたくないというのが正直なところ。 レンダリングに時間がかかるし、書き換え忘れのエラーが面倒だし、cacheオプションが使いこなせていない…。\n今回作ったような自作関数だけでなく、もはやオブジェクトのすべてを呼び出せた方がありがたい。"
+  },
+  {
+    "objectID": "posts/tips02/index.html#呼び出してみる",
+    "href": "posts/tips02/index.html#呼び出してみる",
+    "title": "source関数で自作関数を呼び出す",
+    "section": "呼び出してみる",
+    "text": "呼び出してみる\n自作関数含むオブジェクトは、source関数で呼び出せる。\n\nsource関数がないとき\nfunctions.Rに作った関数summary_stats()を使いたいとき、fuga.qmd上で直接定義していない場合はエラーとなる。\n\n\n\nfuga.qmd\n\nsummary_stats(df)\n\n\nError in summary_stats(df): could not find function \"summary_stats\"\n\n\n\n\nsource関数があるとき\nfuga.qmd上で、summary_stats()を定義したfunctions.Rを呼び出すことで関数を使えるようになる。\n\n\n\nfuga.qmd\n\nsource(\"./functions.R\")\n\n\nfunctions.Rを開いたときのEnvironmentペインが再現されるみたいなイメージと認識している。 そのため、関数以外にも変数やデータがそのまま使えるようになる。\n\n\n\n\n\n\nfunctions.Rのコードを全て実行するので、あまりにも重いと時間がかかるし、ここでエラーが出ると先に進めない。 上から下まで順番に実行されることを前提で、変数名の定義やコメントアウトを上手いことする必要がある。"
+  },
+  {
+    "objectID": "posts/tips02/index.html#ほかの発想",
+    "href": "posts/tips02/index.html#ほかの発想",
+    "title": "source関数で自作関数を呼び出す",
+    "section": "ほかの発想？",
+    "text": "ほかの発想？\nsource()では、.Rを上から下まで実行してオブジェクトを呼び出していたけど、functions.Rのオブジェクト自体を保存して、それを呼び出す方法もある。\nfunctions.R上で作ったsummary_stats()をsaveRDS()で保存しておく。 引数に変数名を入れて実行すると、summary_stats.objが作成される。\n\n\n\nfunctions.R\n\nsaveRDS(summary_stats)\n\n\nfuga.qmd上で使いたい場合は、readRDS()で呼び出して変数に代入する。\n\n\n\nfuga.qmd\n\nsummary_stats &lt;- readRDS(\"./summary_stats.obj\")\n\n\n\n\n\n\n\n\nsource()と違って、.Rファイルの中身を実行するわけではないので、時間は短縮できる。 ただ、summary_stats()の定義を書き換えた場合、同時にsaveRDS()も実行しないとsummary_stats.objの中身が上書きされない。自作関数が増えていくと全然面倒かも。"
+  },
+  {
+    "objectID": "posts/tips02/index.html#おわりに",
+    "href": "posts/tips02/index.html#おわりに",
+    "title": "source関数で自作関数を呼び出す",
+    "section": "おわりに",
+    "text": "おわりに\nファイルをまたいで呼び出したい内容によって、いろいろな方法がありそう。\n雑多な分析の.Rと、きれいにまとめたい.qmdの行き来が永遠の課題だ～～～。\ncacheオプションを使いこなすしかないのか。"
+  },
+  {
+    "objectID": "posts/tips01/index.html",
+    "href": "posts/tips01/index.html",
+    "title": "論文に載せる記述統計表を作る",
+    "section": "",
+    "text": "記述統計を出力する関数はたくさんあるけれど、どれも少しずつもの足りない。\n既存のパッケージに敬意を払ったあと、公式の場で発表できるくらいの記述統計表を出力するための関数を作る。"
+  },
+  {
+    "objectID": "posts/tips01/index.html#はじめに",
+    "href": "posts/tips01/index.html#はじめに",
+    "title": "論文に載せる記述統計表を作る",
+    "section": "",
+    "text": "記述統計を出力する関数はたくさんあるけれど、どれも少しずつもの足りない。\n既存のパッケージに敬意を払ったあと、公式の場で発表できるくらいの記述統計表を出力するための関数を作る。"
+  },
+  {
+    "objectID": "posts/tips01/index.html#目標",
+    "href": "posts/tips01/index.html#目標",
+    "title": "論文に載せる記述統計表を作る",
+    "section": "目標",
+    "text": "目標\n今回はサンプルデータであるirisを使って、Speciesごとに4変数の基本統計量を出力する。\n\nhead(iris)\n\n  Sepal.Length Sepal.Width Petal.Length Petal.Width Species\n1          5.1         3.5          1.4         0.2  setosa\n2          4.9         3.0          1.4         0.2  setosa\n3          4.7         3.2          1.3         0.2  setosa\n4          4.6         3.1          1.5         0.2  setosa\n5          5.0         3.6          1.4         0.2  setosa\n6          5.4         3.9          1.7         0.4  setosa\n\n\n目標は、以下の表のように、グループごとの記述統計表を作ること。 論文の規定という体で大文字小文字の区別や桁数も再現してみたい（右側の相関行列は省略）。\n\n\n\n出典：Hoetker, G. 2006. Do modular products lead to modular organizations? Strategic Management Journal 27 (6): 501–518."
+  },
+  {
+    "objectID": "posts/tips01/index.html#既存のパッケージ",
+    "href": "posts/tips01/index.html#既存のパッケージ",
+    "title": "論文に載せる記述統計表を作る",
+    "section": "既存のパッケージ",
+    "text": "既存のパッケージ\n基本統計量を出してくれる関数として、\n\nbase::summary()\nsummarytools::descr()\npsych::describeBy()\n\nを確認する。\n\n# パッケージの読み込み\npacman::p_load(tidyverse, summarytools, psych, gt)\n\n\nbase::summary()\nとりあえずの確認には便利だけど、標準偏差とサンプル数がない。\n\nsummary(iris)\n\n  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   \n Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  \n 1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  \n Median :5.800   Median :3.000   Median :4.350   Median :1.300  \n Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  \n 3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  \n Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  \n       Species  \n setosa    :50  \n versicolor:50  \n virginica :50  \n                \n                \n                \n\n\nfilter()を使ってSpeciesごとに出力することはできる。\n\niris %&gt;% \n  filter(Species == \"setosa\") %&gt;%\n  summary()\n\n  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   \n Min.   :4.300   Min.   :2.300   Min.   :1.000   Min.   :0.100  \n 1st Qu.:4.800   1st Qu.:3.200   1st Qu.:1.400   1st Qu.:0.200  \n Median :5.000   Median :3.400   Median :1.500   Median :0.200  \n Mean   :5.006   Mean   :3.428   Mean   :1.462   Mean   :0.246  \n 3rd Qu.:5.200   3rd Qu.:3.675   3rd Qu.:1.575   3rd Qu.:0.300  \n Max.   :5.800   Max.   :4.400   Max.   :1.900   Max.   :0.600  \n       Species  \n setosa    :50  \n versicolor: 0  \n virginica : 0  \n                \n                \n                \n\n\n\n\nsummarytools::descr()\nまずはそのままのdescr()。\n\niris %&gt;% \n  descr()\n\nNon-numerical variable(s) ignored: Species\n\n\nDescriptive Statistics  \niris  \nN: 150  \n\n                    Petal.Length   Petal.Width   Sepal.Length   Sepal.Width\n----------------- -------------- ------------- -------------- -------------\n             Mean           3.76          1.20           5.84          3.06\n          Std.Dev           1.77          0.76           0.83          0.44\n              Min           1.00          0.10           4.30          2.00\n               Q1           1.60          0.30           5.10          2.80\n           Median           4.35          1.30           5.80          3.00\n               Q3           5.10          1.80           6.40          3.30\n              Max           6.90          2.50           7.90          4.40\n              MAD           1.85          1.04           1.04          0.44\n              IQR           3.50          1.50           1.30          0.50\n               CV           0.47          0.64           0.14          0.14\n         Skewness          -0.27         -0.10           0.31          0.31\n      SE.Skewness           0.20          0.20           0.20          0.20\n         Kurtosis          -1.42         -1.36          -0.61          0.14\n          N.Valid         150.00        150.00         150.00        150.00\n        Pct.Valid         100.00        100.00         100.00        100.00\n\n\ngroup_by()をかませて、不要な統計量を除くとすっきり、かなり見やすい！ 変数が多すぎないときはこれでも十分かもしれない。\n\niris %&gt;% \n  group_by(Species) %&gt;%\n  descr(stats = c(\"mean\", \"sd\", \"min\", \"max\")) # 変数の指定はMeanでなくmean\n\nDescriptive Statistics  \niris  \nGroup: Species = setosa  \nN: 50  \n\n                Petal.Length   Petal.Width   Sepal.Length   Sepal.Width\n------------- -------------- ------------- -------------- -------------\n         Mean           1.46          0.25           5.01          3.43\n      Std.Dev           0.17          0.11           0.35          0.38\n          Min           1.00          0.10           4.30          2.30\n          Max           1.90          0.60           5.80          4.40\n\nGroup: Species = versicolor  \nN: 50  \n\n                Petal.Length   Petal.Width   Sepal.Length   Sepal.Width\n------------- -------------- ------------- -------------- -------------\n         Mean           4.26          1.33           5.94          2.77\n      Std.Dev           0.47          0.20           0.52          0.31\n          Min           3.00          1.00           4.90          2.00\n          Max           5.10          1.80           7.00          3.40\n\nGroup: Species = virginica  \nN: 50  \n\n                Petal.Length   Petal.Width   Sepal.Length   Sepal.Width\n------------- -------------- ------------- -------------- -------------\n         Mean           5.55          2.03           6.59          2.97\n      Std.Dev           0.55          0.27           0.64          0.32\n          Min           4.50          1.40           4.90          2.20\n          Max           6.90          2.50           7.90          3.80\n\n\nただ、このままだとgt()に渡せないのと、統計量と変数の行列を入れ替えるのが手間すぎるので断念。\n\n\npsych::describeBy()\nまずはそのままのdescribe()。変数が縦にくるタイプ。\n\niris %&gt;% \n  psych::describe()\n\n             vars   n mean   sd median trimmed  mad min max range  skew\nSepal.Length    1 150 5.84 0.83   5.80    5.81 1.04 4.3 7.9   3.6  0.31\nSepal.Width     2 150 3.06 0.44   3.00    3.04 0.44 2.0 4.4   2.4  0.31\nPetal.Length    3 150 3.76 1.77   4.35    3.76 1.85 1.0 6.9   5.9 -0.27\nPetal.Width     4 150 1.20 0.76   1.30    1.18 1.04 0.1 2.5   2.4 -0.10\nSpecies*        5 150 2.00 0.82   2.00    2.00 1.48 1.0 3.0   2.0  0.00\n             kurtosis   se\nSepal.Length    -0.61 0.07\nSepal.Width      0.14 0.04\nPetal.Length    -1.42 0.14\nPetal.Width     -1.36 0.06\nSpecies*        -1.52 0.07\n\n\ndescribeBy()を使うことで、簡単にやりたいことに近づいた。\n\niris %&gt;% \n  psych::describeBy(iris$Species)\n\n\n Descriptive statistics by group \ngroup: setosa\n             vars  n mean   sd median trimmed  mad min max range skew kurtosis\nSepal.Length    1 50 5.01 0.35    5.0    5.00 0.30 4.3 5.8   1.5 0.11    -0.45\nSepal.Width     2 50 3.43 0.38    3.4    3.42 0.37 2.3 4.4   2.1 0.04     0.60\nPetal.Length    3 50 1.46 0.17    1.5    1.46 0.15 1.0 1.9   0.9 0.10     0.65\nPetal.Width     4 50 0.25 0.11    0.2    0.24 0.00 0.1 0.6   0.5 1.18     1.26\nSpecies         5 50 1.00 0.00    1.0    1.00 0.00 1.0 1.0   0.0  NaN      NaN\n               se\nSepal.Length 0.05\nSepal.Width  0.05\nPetal.Length 0.02\nPetal.Width  0.01\nSpecies      0.00\n------------------------------------------------------------ \ngroup: versicolor\n             vars  n mean   sd median trimmed  mad min max range  skew kurtosis\nSepal.Length    1 50 5.94 0.52   5.90    5.94 0.52 4.9 7.0   2.1  0.10    -0.69\nSepal.Width     2 50 2.77 0.31   2.80    2.78 0.30 2.0 3.4   1.4 -0.34    -0.55\nPetal.Length    3 50 4.26 0.47   4.35    4.29 0.52 3.0 5.1   2.1 -0.57    -0.19\nPetal.Width     4 50 1.33 0.20   1.30    1.32 0.22 1.0 1.8   0.8 -0.03    -0.59\nSpecies         5 50 2.00 0.00   2.00    2.00 0.00 2.0 2.0   0.0   NaN      NaN\n               se\nSepal.Length 0.07\nSepal.Width  0.04\nPetal.Length 0.07\nPetal.Width  0.03\nSpecies      0.00\n------------------------------------------------------------ \ngroup: virginica\n             vars  n mean   sd median trimmed  mad min max range  skew kurtosis\nSepal.Length    1 50 6.59 0.64   6.50    6.57 0.59 4.9 7.9   3.0  0.11    -0.20\nSepal.Width     2 50 2.97 0.32   3.00    2.96 0.30 2.2 3.8   1.6  0.34     0.38\nPetal.Length    3 50 5.55 0.55   5.55    5.51 0.67 4.5 6.9   2.4  0.52    -0.37\nPetal.Width     4 50 2.03 0.27   2.00    2.03 0.30 1.4 2.5   1.1 -0.12    -0.75\nSpecies         5 50 3.00 0.00   3.00    3.00 0.00 3.0 3.0   0.0   NaN      NaN\n               se\nSepal.Length 0.09\nSepal.Width  0.05\nPetal.Length 0.08\nPetal.Width  0.04\nSpecies      0.00\n\n\n不要な列を削除して表を扱いやすくしてみる。\n\ntab &lt;- iris %&gt;% \n  describeBy(iris$Species, \n             mat = TRUE # 行列形式で出力\n            ) \n\ntab &lt;- tab[, names(tab) %in% c(\"group1\", \"mean\", \"sd\", \"min\", \"max\")] \ntab\n\n                  group1  mean        sd min max\nSepal.Length1     setosa 5.006 0.3524897 4.3 5.8\nSepal.Length2 versicolor 5.936 0.5161711 4.9 7.0\nSepal.Length3  virginica 6.588 0.6358796 4.9 7.9\nSepal.Width1      setosa 3.428 0.3790644 2.3 4.4\nSepal.Width2  versicolor 2.770 0.3137983 2.0 3.4\nSepal.Width3   virginica 2.974 0.3224966 2.2 3.8\nPetal.Length1     setosa 1.462 0.1736640 1.0 1.9\nPetal.Length2 versicolor 4.260 0.4699110 3.0 5.1\nPetal.Length3  virginica 5.552 0.5518947 4.5 6.9\nPetal.Width1      setosa 0.246 0.1053856 0.1 0.6\nPetal.Width2  versicolor 1.326 0.1977527 1.0 1.8\nPetal.Width3   virginica 2.026 0.2746501 1.4 2.5\nSpecies1          setosa 1.000 0.0000000 1.0 1.0\nSpecies2      versicolor 2.000 0.0000000 2.0 2.0\nSpecies3       virginica 3.000 0.0000000 3.0 3.0\n\n\nSpeceiesのsetosaだけ取り出して、細部を再現してみようとするけど、gt()に渡すと1列目が消えたり面倒になったのでここで撤退。\n\ntab %&gt;% \n  filter(group1 == \"setosa\") %&gt;% \n  mutate(Mean = round(mean, 2), \n         S.D. = round(sd, 2),\n         Min. = round(min, 2), # minとmaxは0があって2桁に見えない\n         Max. = round(max, 2)  # 解決法は後述\n         ) %&gt;% \n  select(Mean:Max.) %&gt;%\n  head(4) %&gt;% \n  gt()\n\n\n\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n5.01\n0.35\n4.3\n5.8\n\n\n3.43\n0.38\n2.3\n4.4\n\n\n1.46\n0.17\n1.0\n1.9\n\n\n0.25\n0.11\n0.1\n0.6"
+  },
+  {
+    "objectID": "posts/tips01/index.html#関数を自作する",
+    "href": "posts/tips01/index.html#関数を自作する",
+    "title": "論文に載せる記述統計表を作る",
+    "section": "関数を自作する",
+    "text": "関数を自作する\n論文の表を再現するためにtidyverse::summarise()とgt()を使って関数を作ってみる。\nまずは、across()を使ってすべての変数の統計量を出す。 このタイミングで、基本統計量の厳密な表記も指定しておく。\n\niris %&gt;%\n  summarise(across(.cols = where(is.numeric), # 数値型のすべての変数について\n                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), # 今回は欠損値ないけど\n                               S.D. = ~ sd(.x, na.rm = TRUE),\n                               Min. = ~ min(.x, na.rm = TRUE),\n                               Max. = ~ max(.x, na.rm = TRUE)),\n                   .names = \"{col}-{fn}\") # \"列名-関数名\"の形式で列名を作る\n              ) %&gt;% \n  round(2) %&gt;% # 小数点以下2桁に\n  format(nsmall = 2) # 0も表示させて見た目も2桁に\n\n  Sepal.Length-Mean Sepal.Length-S.D. Sepal.Length-Min. Sepal.Length-Max.\n1              5.84              0.83              4.30              7.90\n  Sepal.Width-Mean Sepal.Width-S.D. Sepal.Width-Min. Sepal.Width-Max.\n1             3.06             0.44             2.00             4.40\n  Petal.Length-Mean Petal.Length-S.D. Petal.Length-Min. Petal.Length-Max.\n1              3.76              1.77              1.00              6.90\n  Petal.Width-Mean Petal.Width-S.D. Petal.Width-Min. Petal.Width-Max.\n1             1.20             0.76             0.10             2.50\n\n\npivot_loner()で表に。\n\niris %&gt;%\n  summarise(across(.cols = where(is.numeric), \n                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), \n                               S.D. = ~ sd(.x, na.rm = TRUE),\n                               Min. = ~ min(.x, na.rm = TRUE),\n                               Max. = ~ max(.x, na.rm = TRUE)),\n                   .names = \"{col}-{fn}\") \n              ) %&gt;% \n  round(2) %&gt;% \n  format(nsmall = 2) %&gt;% \n  pivot_longer(cols = everything(), # 全ての列を縦に\n               names_to = c(\"variable\", \"stat\"), # variableとstatに分ける\n               names_sep = \"-\" # -でわける\n               ) \n\n# A tibble: 16 × 3\n   variable     stat  value   \n   &lt;chr&gt;        &lt;chr&gt; &lt;I&lt;chr&gt;&gt;\n 1 Sepal.Length Mean  5.84    \n 2 Sepal.Length S.D.  0.83    \n 3 Sepal.Length Min.  4.30    \n 4 Sepal.Length Max.  7.90    \n 5 Sepal.Width  Mean  3.06    \n 6 Sepal.Width  S.D.  0.44    \n 7 Sepal.Width  Min.  2.00    \n 8 Sepal.Width  Max.  4.40    \n 9 Petal.Length Mean  3.76    \n10 Petal.Length S.D.  1.77    \n11 Petal.Length Min.  1.00    \n12 Petal.Length Max.  6.90    \n13 Petal.Width  Mean  1.20    \n14 Petal.Width  S.D.  0.76    \n15 Petal.Width  Min.  0.10    \n16 Petal.Width  Max.  2.50    \n\n\npivot_wider()で横に。\n\niris %&gt;%\n  summarise(across(.cols = where(is.numeric), \n                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), \n                               S.D. = ~ sd(.x, na.rm = TRUE),\n                               Min. = ~ min(.x, na.rm = TRUE),\n                               Max. = ~ max(.x, na.rm = TRUE)),\n                   .names = \"{col}-{fn}\") \n              ) %&gt;% \n  round(2) %&gt;% \n  format(nsmall = 2) %&gt;% \n  pivot_longer(cols = everything(), \n               names_to = c(\"variable\", \"stat\"), \n               names_sep = \"-\" \n               ) %&gt;% \n  pivot_wider(names_from = stat, # statを列に\n              values_from = value # valueの値に\n              ) \n\n# A tibble: 4 × 5\n  variable     Mean     S.D.     Min.     Max.    \n  &lt;chr&gt;        &lt;I&lt;chr&gt;&gt; &lt;I&lt;chr&gt;&gt; &lt;I&lt;chr&gt;&gt; &lt;I&lt;chr&gt;&gt;\n1 Sepal.Length 5.84     0.83     4.30     7.90    \n2 Sepal.Width  3.06     0.44     2.00     4.40    \n3 Petal.Length 3.76     1.77     1.00     6.90    \n4 Petal.Width  1.20     0.76     0.10     2.50    \n\n\ngt()を使って見た目をより近づけていく。\n\niris %&gt;%\n  summarise(across(.cols = where(is.numeric), \n                   .fns = list(Mean = ~ mean(.x, na.rm = TRUE), \n                               S.D. = ~ sd(.x, na.rm = TRUE),\n                               Min. = ~ min(.x, na.rm = TRUE),\n                               Max. = ~ max(.x, na.rm = TRUE)),\n                   .names = \"{col}-{fn}\") \n              ) %&gt;% \n  round(2) %&gt;% \n  format(nsmall = 2) %&gt;% \n  pivot_longer(cols = everything(), \n               names_to = c(\"variable\", \"stat\"), \n               names_sep = \"-\" \n               ) %&gt;% \n  pivot_wider(names_from = stat, \n              values_from = value \n              ) %&gt;% \n  cbind(num = c(1:4),.) %&gt;% # 変数番号をつける\n  gt() %&gt;% \n  cols_label(num = \"\",\n             variable = \"\") %&gt;% # 列名を消す\n  tab_header(title = \"グループ名\") %&gt;%  # タイトル\n  tab_options(heading.align = \"left\") %&gt;%   # タイトルを左揃えに\n  tab_footnote(footnote = paste(\"*\",\"サンプル数\", \"observations.\")) # 脚注\n\n\n\n\n\n\n\nグループ名\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n1\nSepal.Length\n5.84\n0.83\n4.30\n7.90\n\n\n2\nSepal.Width\n3.06\n0.44\n2.00\n4.40\n\n\n3\nPetal.Length\n3.76\n1.77\n1.00\n6.90\n\n\n4\nPetal.Width\n1.20\n0.76\n0.10\n2.50\n\n\n\n* サンプル数 observations.\n\n\n\n\n\n\n\n\n完成直前！グループごとに出力できるように微調整して関数にまとめる。\n\n\n\n\n\n\nrlangパッケージの記法、絶賛勉強中です。ムズイ。\n\n\n\n\nsummary_stats &lt;- function(df, g) { \n  # gをシンボルに変換\n  g &lt;- rlang::enquo(g)\n  \n  # グループごとのサンプル数を計算\n  n &lt;- df %&gt;% \n    filter(Species == !!g) %&gt;% \n    nrow()\n  \n  df %&gt;%\n    filter(Species == !!g) %&gt;% #\n    summarise(across(where(is.numeric), \n                     list(Mean = ~ mean(.x, na.rm = TRUE),\n                          S.D. = ~ sd(.x, na.rm = TRUE),\n                          Min. = ~ min(.x, na.rm = TRUE),\n                          Max. = ~ max(.x, na.rm = TRUE)),\n                     .names = \"{col}-{fn}\")) %&gt;% \n    round(2) %&gt;% \n    format(nsmall = 2) %&gt;% \n    pivot_longer(cols = everything(), \n                 names_to = c(\"variable\", \"stat\"), \n                 names_sep = \"-\") %&gt;% \n    pivot_wider(names_from = stat, \n                values_from = value) %&gt;% \n    cbind(num = c(1:4),.) %&gt;% \n    gt() %&gt;% \n    cols_label(num = \"\",\n               variable = \"\") %&gt;% \n    tab_header(title = rlang::as_name(g)) %&gt;%  # タイトルにグループ名gを指定\n    tab_options(heading.align = \"left\") %&gt;%   \n    tab_footnote(footnote = paste(\"*\",n, \"observations.\")) # サンプル数nをここで使う\n}\n\n\nsummary_stats(iris, \"setosa\")\n\n\n\n\n\n\n\nsetosa\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n1\nSepal.Length\n5.01\n0.35\n4.30\n5.80\n\n\n2\nSepal.Width\n3.43\n0.38\n2.30\n4.40\n\n\n3\nPetal.Length\n1.46\n0.17\n1.00\n1.90\n\n\n4\nPetal.Width\n0.25\n0.11\n0.10\n0.60\n\n\n\n* 50 observations.\n\n\n\n\n\n\n\nsummary_stats(iris, \"versicolor\")\n\n\n\n\n\n\n\nversicolor\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n1\nSepal.Length\n5.94\n0.52\n4.90\n7.00\n\n\n2\nSepal.Width\n2.77\n0.31\n2.00\n3.40\n\n\n3\nPetal.Length\n4.26\n0.47\n3.00\n5.10\n\n\n4\nPetal.Width\n1.33\n0.20\n1.00\n1.80\n\n\n\n* 50 observations.\n\n\n\n\n\n\n\nsummary_stats(iris, \"virginica\")\n\n\n\n\n\n\n\nvirginica\n\n\n\n\nMean\nS.D.\nMin.\nMax.\n\n\n\n\n1\nSepal.Length\n6.59\n0.64\n4.90\n7.90\n\n\n2\nSepal.Width\n2.97\n0.32\n2.20\n3.80\n\n\n3\nPetal.Length\n5.55\n0.55\n4.50\n6.90\n\n\n4\nPetal.Width\n2.03\n0.27\n1.40\n2.50\n\n\n\n* 50 observations.\n\n\n\n\n\n\n\n\nできた～～～！"
+  },
+  {
+    "objectID": "posts/tips01/index.html#おわりに",
+    "href": "posts/tips01/index.html#おわりに",
+    "title": "論文に載せる記述統計表を作る",
+    "section": "おわりに",
+    "text": "おわりに\nデータフレームを.xlsx出力して、Excelで見た目整えた方が楽なのでは？って思いました（本末転倒）。\nsummarytools::descr()もpsych::describeBy()も全然使えるけど、やっぱりtidyverseがお気に入りかもしれない。 R上でここまで再現できるんだという学びになりました。\n今後は関数をより気軽に作るために非標準評価 (Non Standard Evaluation: NSE) を勉強していきたいです。"
+  },
+  {
+    "objectID": "posts/tips01/index.html#参考",
+    "href": "posts/tips01/index.html#参考",
+    "title": "論文に載せる記述統計表を作る",
+    "section": "参考",
+    "text": "参考\ngt入門\n雰囲気で理解するtidy evaluation(1): tidy evaluationの導入"
   }
 ]

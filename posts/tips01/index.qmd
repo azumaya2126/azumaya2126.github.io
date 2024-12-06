@@ -4,6 +4,7 @@ author: "azumaya"
 date: "2024/08/23"
 # date-modified: "today"
 format: html
+image: images/cover.png
 categories:
   - R
   - Analysis

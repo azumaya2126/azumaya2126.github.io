@@ -1,52 +1,23 @@
 ---
 title: "About"
 description: "興味、関心、趣味など"
-date-modified: "2024/10/15"
+date-modified: "2024/12/06"
 page-layout: full
 title-block-banner: true
 ---
 
 ## About Me
 
-所属
+学生（経営学研究科）
 
-- 経営学部→経営学研究科M2
-
-スキル
-
-- R：5年目、日々精進
+- R：そろそろ5年目、趣味
 - Quarto：趣味
 - Python：ぼちぼち
 - GitHub：まだまだこれから
 - Adobe Illustrator：6年目、紙媒体が好き
-- Adobe After Effects：まだまだこれから
+- Adobe After Effects：3年くらい使ってた
 
-いつかKaggleに参加したいです。
-
-## Favorite
-
-### 音楽
-
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3PeN36P94esALkSaadtn2H?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-
-
-### 本
-
-[これまでに読んだ本](https://bookmeter.com/users/466784)
-
-お気に入り
-
-- 橋爪大三郎 (1988)[『はじめての構造主義』](https://bookclub.kodansha.co.jp/product?item=0000146360)講談社現代新書.
-- マックス・ウェーバー著, 中山元訳(2010)[『プロテスタンティズムの倫理と資本主義の精神』](https://bookplus.nikkei.com/atcl/catalog/10/P47910/)日経BP.
-- カルロ・マリア・チッポラ著, 徳橋曜訳 (2001)[『経済史への招待: 歴史学と経済学のはざまへ』](https://www.kinokuniya.co.jp/f/dsg-01-9784772004848)国文社.
-
-
-
-### 作品
-
-- 森見登美彦
-- 「少女☆歌劇レヴュースタァライト」シリーズ
-- [濱祐斗デザイン事務所](http://www.hama-design.com/)
+いつかKaggleに参加したい。
 
 
 ## Memo
@@ -64,11 +35,11 @@ title-block-banner: true
 - SQL
 - 論文レプリケーション（Burgstahler and Dichev (1997), Sloan (1996)）
 - QuartoでTikz
+- 統計検定準1級とりたい
 
 
 <!-- - 星野源POP VIRUS以降 -->
 <!-- - 星野源とSAKEROCK -->
-<!-- - キリンジ時代の泰之曲と高樹曲 -->
 <!-- - 荒井時代のユーミン -->
 <!-- - キリンジとオフコースって似た成分ある気がする -->
 <!-- - クラシックはどんな数値？ラヴェルとドビュッシー -->
@@ -85,4 +56,31 @@ title-block-banner: true
 - バッチ処理
 - アクションボタン
 - 文字組み
+
+
+## Favorite
+
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3PeN36P94esALkSaadtn2H?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+
+<!-- ### 本 -->
+
+<!-- [これまでに読んだ本](https://bookmeter.com/users/466784) -->
+
+<!-- お気に入り -->
+
+<!-- - 橋爪大三郎 (1988)[『はじめての構造主義』](https://bookclub.kodansha.co.jp/product?item=0000146360)講談社現代新書. -->
+
+<!-- - マックス・ウェーバー著, 中山元訳(2010)[『プロテスタンティズムの倫理と資本主義の精神』](https://bookplus.nikkei.com/atcl/catalog/10/P47910/)日経BP. -->
+
+<!-- - カルロ・マリア・チッポラ著, 徳橋曜訳 (2001)[『経済史への招待: 歴史学と経済学のはざまへ』](https://www.kinokuniya.co.jp/f/dsg-01-9784772004848)国文社. -->
+
+
+
+<!-- ### 作品 -->
+
+<!-- - 森見登美彦 -->
+<!-- - 「少女☆歌劇レヴュースタァライト」シリーズ -->
+<!-- - [濱祐斗デザイン事務所](http://www.hama-design.com/) -->
 
