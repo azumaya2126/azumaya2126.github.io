@@ -20,6 +20,7 @@ website:
     center: 
       - text: "© 2024, azumaya"
         href: terms.qmd
+  google-analytics: "G-8TDHM0EM5T"
 
 format:
   html:
